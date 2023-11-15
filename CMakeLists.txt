@@ -22,7 +22,7 @@ find_package(OpenGL REQUIRED)
 include_directories(${CMAKE_SOURCE_DIR}/prj.cw/imgui-filebrowser)
 include_directories(${CMAKE_SOURCE_DIR}/prj.cw/ImGuiColorTextEdit)
 
-add_library(ColorEditor ${CMAKE_SOURCE_DIR}/prj.cw/ImGuiColorTextEdit/TextEditor.cpp ${CMAKE_SOURCE_DIR}/prj.cw/ImGuiColorTextEdit/TextEditor.h)${CMAKE_SOURCE_DIR}/prj.cw/ImGuiColorTextEdit/TextEditor.h)
+add_library(ColorEditor ${CMAKE_SOURCE_DIR}/prj.cw/ImGuiColorTextEdit/TextEditor.cpp ${CMAKE_SOURCE_DIR}/prj.cw/ImGuiColorTextEdit/TextEditor.h)
 target_link_libraries(ColorEditor imgui::imgui)
 set_property(TARGET ColorEditor PROPERTY CXX_STANDARD 20)
 target_include_directories(ColorEditor PUBLIC
