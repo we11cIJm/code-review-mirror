@@ -19,8 +19,8 @@ add_executable(app app.cpp)
 find_package(imgui CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 
-include_directories(${CMAKE_SOURCE_DIR}/prj.cw/imgui-filebrowser)
-include_directories(${CMAKE_SOURCE_DIR}/prj.cw/ImGuiColorTextEdit)
+include_directories(${CMAKE_SOURCE_DIR}/imgui-filebrowser)
+include_directories(${CMAKE_SOURCE_DIR}/ImGuiColorTextEdit)
 
 add_library(ColorEditor ${CMAKE_SOURCE_DIR}/ImGuiColorTextEdit/TextEditor.cpp ${CMAKE_SOURCE_DIR}/ImGuiColorTextEdit/TextEditor.h)
 target_link_libraries(ColorEditor imgui::imgui)
