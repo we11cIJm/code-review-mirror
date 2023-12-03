@@ -1,9 +1,9 @@
-set (source_files
+set(source_files
     git.cpp
     parse.cpp
     git_clone.cpp
     git_add_commit.cpp
-    git_push_pull.cpp
+#    git_push_pull.cpp
 )
 
 add_library(${PROJECT_NAME} ${source_files} include/BlindCodeReview/git.hpp)

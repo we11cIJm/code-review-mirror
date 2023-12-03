@@ -2,67 +2,40 @@
 #define BLINDCODEREVIEW_GIT_HPP
 
 #include <iostream>
-#include <vector>
+#include <string>
 #include <git2.h>
-#include <git2/index.h>
-#include <git2/repository.h>
+#include <git2/common.h>
+#include <git2/errors.h>
 #include <fstream>
-#include <map>
 #include <filesystem>
-#include <cstring>
+#include <map>
+#include <vector>
 
 namespace git {
 
-    class GitObject {
-    private:
-        // TODO: change repo_local_path_ to std::filesystem::path if needed
-        std::string repo_local_path_; // local path where repository is stored
-        std::string repo_url_; // url of repository
-        git_repository* repo_; // object of the repository
-        std::string repo_name_; // name of the repository
-        git_clone_options clone_opts_;
-        git_index* index_; // index of the repository
-        git_signature* signature_; // signature of the repository
-        git_oid tree_id_; // tree id of the repository
-        git_tree* tree_; // tree of the repository
-        git_oid commit_id_; // commit id of the repository
-        git_commit* commit_; // commit of the repository
-        git_remote* remote_; // remote of the repository
-        git_fetch_options fetch_opts_; // fetch options of the repository
+    int Error(const git_error* err, int error);
 
-//        void GetInfo(const std::string& str); // get everything that defines GitObject
+    std::string GetRepoName(const std::string& url);
 
-    public:
-        explicit GitObject(const std::string& repo_url); // create GitObject from url from .txt file
-        ~GitObject();
+    int cred_acquire_cb( git_cred** out, const char* url
+                       , const char* username_from_url
+                       , unsigned int allowed_types, void* payload);
 
-        void Add (const std::string& filename); // add file to repository (if filename == "*" (by default) then add all files)
-        void Add (const std::vector<std::string>& filenames); // add files to repository
 
-        void Commit (const std::string& message); // commit all changes
-//        void Commit (const std::string& message, const std::string& filename); // commit changes for one file
-//        void Commit (const std::string& message, const std::vector<std::string>& filenames); // commit changes for many files
+    void CloneByFile(std::string& filename);
+    int Clone(const char* url, const char* path);
 
-        void Push (); // push local changes to origin
-        void Pull (); // pull changes from origin to local
+    int Add(const char* path_to_repo);
+    int Commit(const char* path_to_repo, const char* message);
 
-        friend bool CloneByUrl (const std::string& url);
-        std::string GetRepositoryName() const;
-        git_repository* GetRepository() const;
-    };
-
-    static std::vector<GitObject> git_objects; // vector of all GitObjects
-
-    void CloneByFile (const std::string& filename, const std::string& urls_file); // clone all repositories from file to local path
-    bool CloneByUrl (const std::string& url); // clone repository from origin to local path
-
-    git_repository* OpenExistingRepo(const std::string& localPath); // check if repository exists locally
 } // namespace git
 
 namespace parse {
     extern std::map<std::string, std::string> arguments;
     extern std::string filename;
     extern std::string path_to_file; // local path to file with urls
+    extern std::string username;
+    extern std::string pat;
 //    extern std::string location; // where to clone repositories
 
     bool Parse(int argc, char** argv);

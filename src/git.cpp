@@ -1,22 +1,40 @@
 #include <BlindCodeReview/git.hpp>
 
 namespace git {
-    GitObject::GitObject(const std::string &repo_url)
-            : repo_url_(repo_url), repo_(nullptr), index_(nullptr), repo_local_path_(std::filesystem::current_path().string() + "/")
-            , signature_(nullptr), tree_(nullptr), commit_(nullptr), remote_(nullptr)
-            , clone_opts_(GIT_CLONE_OPTIONS_INIT)
-            , fetch_opts_(GIT_FETCH_OPTIONS_INIT) {
-//        clone_opts_.checkout_branch = "refs/heads/main"; // switch to main branch
-        repo_name_ = GetRepositoryName(); // get the name of the repository
-        repo_local_path_ += repo_name_; // add name of the repository to local path
+
+    int Error(const git_error* err, int error) {
+        if (err) {
+            std::cout << "ERROR " << err->klass << ": " << err->message << std::endl;
+        } else {
+            std::cout << "ERROR " << error << ": no detailed info\n";
+        }
+        return error;
     }
 
-    GitObject::~GitObject() {
-        git_repository_free(repo_);
+    std::string GetRepoName(const std::string& url) {
+        size_t lastSlashPos = url.find_last_of('/'); // find last '/' character in URL
+        std::string repositoryName = lastSlashPos != std::string::npos ? url.substr(lastSlashPos + 1) : url;
+        size_t gitExtensionPos = repositoryName.find(".git");
+        if (gitExtensionPos != std::string::npos && gitExtensionPos == repositoryName.length() - 4) {
+            repositoryName = repositoryName.substr(0, gitExtensionPos);
+        }
+
+        return repositoryName;
     }
 
-    git_repository* GitObject::GetRepository() const {
-        return repo_;
+    // Function to acquire credentials
+    int cred_acquire_cb(
+            git_cred** out,
+            const char* url,
+            const char* username_from_url,
+            unsigned int allowed_types,
+            void* payload) {
+        // Create credentials and assign them to `*out`
+        git_cred_userpass_plaintext_new(out, "we11cIJm", "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");
+
+        return 0;
     }
+
+
 
 } // namespace git
