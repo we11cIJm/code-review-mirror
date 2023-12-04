@@ -14,7 +14,7 @@ nust misis 22', thirds semester project
 ---
 
 ## Самсонов Николай
-__Задача:__ Взаимодействие с гитом.
+__Задача:__ Взаимодействие с гитом
 
 __Хранилище проекта:__ https://github.com/we11cIJm/misis2023f-22-03-samsonov-n-o
 
