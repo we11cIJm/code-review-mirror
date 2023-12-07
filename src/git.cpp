@@ -23,18 +23,16 @@ namespace git {
     }
 
     // Function to acquire credentials
-    int cred_acquire_cb(
+    int credentials_callback(
             git_cred** out,
             const char* url,
             const char* username_from_url,
             unsigned int allowed_types,
             void* payload) {
         // Create credentials and assign them to `*out`
-        git_cred_userpass_plaintext_new(out, "we11cIJm", "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");
+        git_cred_userpass_plaintext_new(out, "your_PAT", "x-oauth-basic");
 
         return 0;
     }
-
-
 
 } // namespace git

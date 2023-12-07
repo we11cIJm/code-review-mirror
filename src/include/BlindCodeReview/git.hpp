@@ -5,7 +5,7 @@
 #include <string>
 #include <git2.h>
 #include <git2/common.h>
-#include <git2/errors.h>
+#include <git2/remote.h>
 #include <fstream>
 #include <filesystem>
 #include <map>
@@ -17,16 +17,19 @@ namespace git {
 
     std::string GetRepoName(const std::string& url);
 
-    int cred_acquire_cb( git_cred** out, const char* url
+    int credentials_callback( git_cred** out, const char* url
                        , const char* username_from_url
                        , unsigned int allowed_types, void* payload);
-
 
     void CloneByFile(std::string& filename);
     int Clone(const char* url, const char* path);
 
     int Add(const char* path_to_repo);
     int Commit(const char* path_to_repo, const char* message);
+    int Push(const char* path_to_repo);
+    int Pull(const char* path_to_repo);
+    int Merge(const char* path_to_repo, const char* fetched_commit_hash);
+
 
 } // namespace git
 

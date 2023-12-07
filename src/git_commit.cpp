@@ -2,28 +2,6 @@
 
 namespace git {
 
-    int Add(const char* path_to_repo) {
-        git_repository* repo = nullptr;
-        git_index* index = nullptr;
-
-        int error = git_repository_open(&repo, path_to_repo);
-        if (error != 0) {
-            return Error(git_error_last(), error);
-        }
-
-        error = git_repository_index(&index, repo);
-        if (error != 0) {
-            return Error(git_error_last(), error);
-        }
-
-        git_index_add_all(index, nullptr, 0, nullptr, nullptr);
-        git_index_write(index);
-        git_index_free(index);
-        git_repository_free(repo);
-
-        return 0;
-    }
-
     int Commit(const char* path_to_repo, const char* message) {
         git_oid commit_oid, tree_id;
         git_repository* repo = nullptr;
@@ -52,7 +30,6 @@ namespace git {
 
         git_index_write_tree(&tree_id, index);
         git_index_write(index);
-
 
         error = git_tree_lookup(&tree, repo, &tree_id);
         if (error != 0) {
