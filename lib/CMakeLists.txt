@@ -1,12 +1,11 @@
 set(source_files
     git.cpp
-    parse.cpp
     git_clone.cpp
+    git_add.cpp
     git_commit.cpp
     git_push.cpp
     git_pull.cpp
     git_merge.cpp
-    git_add.cpp
 )
 
 add_library(${PROJECT_NAME} ${source_files} include/BlindCodeReview/git.hpp)

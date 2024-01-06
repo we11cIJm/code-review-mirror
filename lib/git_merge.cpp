@@ -2,9 +2,9 @@
 
 namespace git {
 
-    int Merge(const char* path_to_repo, const char* fetched_commit_hash) {
+    int Merge(const char* local_path_to_repo, const char* fetched_commit_hash) {
         git_repository* repo = nullptr;
-        int error = git_repository_open(&repo, path_to_repo);
+        int error = git_repository_open(&repo, local_path_to_repo);
         if (error < 0) {
             std::cerr << "Error opening repository: " << giterr_last()->message << std::endl;
             git_libgit2_shutdown();
@@ -30,7 +30,7 @@ namespace git {
             std::cerr << "Error looking up fetched commit: " << giterr_last()->message << std::endl;
             git_reference_free(head_ref);
             git_repository_free(repo);
-            git_libgit2_shutdown();
+            git_libgit2_shutdown(); // TODO: ???
             return error;
         }
 
@@ -40,7 +40,7 @@ namespace git {
         git_signature* signature;
         error = git_signature_default(&signature, repo);
         if (error != 0) {
-            return Error(git_error_last(), error);
+            return Error(git_error_last(), error, static_cast<const std::string>(local_path_to_repo));
         }
 
         git_commit* parents[] = {commit, fetched_commit};
@@ -54,7 +54,7 @@ namespace git {
                 signature,
                 signature,
                 "UTF-8",
-                "Merge branch 'main'",
+                "Merge commit",
                 tree,
                 2,
                 (const git_commit**)parents
@@ -62,8 +62,6 @@ namespace git {
 
         if (error < 0) {
             std::cerr << "Error creating merge commit: " << giterr_last()->message << std::endl;
-        } else {
-            std::cout << "Merge commit created successfully!" << std::endl;
         }
 
         git_commit_free(fetched_commit);
