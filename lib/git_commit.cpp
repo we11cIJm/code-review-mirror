@@ -14,7 +14,7 @@ namespace git {
         int error = git_repository_open(&repo, local_path_to_repo.c_str());
         if (error != 0) {
             CleanUp(repo, index, tree, parent, ref, nullptr, signature);
-            return Error(git_error_last(), error, static_cast<const std::string>(local_path_to_repo));
+            return Error(git_error_last(), error, local_path_to_repo);
         }
 
         error = git_revparse_ext(&parent, &ref, repo, "HEAD");
@@ -22,13 +22,13 @@ namespace git {
             std::cout << "HEAD not found. Creating first commit\n";
         } else if (error != 0) {
             CleanUp(repo, index, tree, parent, ref, nullptr, signature);
-            return Error(git_error_last(), error, static_cast<const std::string>(local_path_to_repo));
+            return Error(git_error_last(), error, local_path_to_repo);
         }
 
         error = git_repository_index(&index, repo);
         if (error != 0) {
             CleanUp(repo, index, tree, parent, ref, nullptr, signature);
-            return Error(git_error_last(), error, static_cast<const std::string>(local_path_to_repo));
+            return Error(git_error_last(), error, local_path_to_repo);
         }
 
         git_index_write_tree(&tree_id, index);
@@ -37,13 +37,13 @@ namespace git {
         error = git_tree_lookup(&tree, repo, &tree_id);
         if (error != 0) {
             CleanUp(repo, index, tree, parent, ref, nullptr, signature);
-            return Error(git_error_last(), error, static_cast<const std::string>(local_path_to_repo));
+            return Error(git_error_last(), error, local_path_to_repo);
         }
 
         error = git_signature_default(&signature, repo);
         if (error != 0) {
             CleanUp(repo, index, tree, parent, ref, nullptr, signature);
-            return Error(git_error_last(), error, static_cast<const std::string>(local_path_to_repo));
+            return Error(git_error_last(), error, local_path_to_repo);
         }
 
         error = git_commit_create_v(
@@ -59,7 +59,7 @@ namespace git {
         );
         if (error != 0) {
             CleanUp(repo, index, tree, parent, ref, nullptr, signature);
-            return Error(git_error_last(), error, static_cast<const std::string>(local_path_to_repo));
+            return Error(git_error_last(), error, local_path_to_repo);
         }
 
         CleanUp(repo, index, tree, parent, ref, nullptr, signature);

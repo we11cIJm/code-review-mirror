@@ -6,6 +6,8 @@ set(source_files
     git_push.cpp
     git_pull.cpp
     git_merge.cpp
+    git_fetch.cpp
+    help_stuff.cpp
 )
 
 add_library(${PROJECT_NAME} ${source_files} include/BlindCodeReview/git.hpp)
