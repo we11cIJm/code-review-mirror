@@ -2,6 +2,8 @@
 #include <vector>
 #include <string>
 #include <filesystem>
+#include <algorithm>
+#include <iostream>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -25,8 +27,14 @@
 #include "../libs/emscripten/emscripten_mainloop_stub.h"
 #endif
 
-void send() {
+/*void send() {
 
+}*/
+
+std::istream& readOneChar(std::istream& input) {
+    char tmpC = 0;
+    input.get(tmpC);
+    return input;
 }
 
 static void glfw_error_callback(int error, const char* description)
@@ -75,40 +83,67 @@ int main(int, char**)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    // Load Fonts
-    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
-    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
-    // - If the file cannot be loaded, the function will return a nullptr. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
-    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
-    // - Use '#define IMGUI_ENABLE_FREETYPE' in your imconfig file to use Freetype for higher quality font rendering.
-    // - Read 'docs/FONTS.md' for more instructions and details.
-    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
-    // - Our Emscripten build process allows embedding fonts to be accessible at runtime from the "fonts/" folder. See Makefile.emscripten for details.
-    //io.Fonts->AddFontDefault();
-    //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
-    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
-    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
-    //IM_ASSERT(font != nullptr);
-
     // Our state
-    bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    std::vector<std::pair<int, std::string>> data;
+    float globalScale = 1.1;
+
+    bool toScrollEditor = false;
+    bool toScrollComments = false;
+    float prevScrollEditor = 0;
+    float prevScrollComments = 0;
+    float scrollEditor = 0;
+    float scrollComments = 0;
+
+    std::map<int, std::string> reviewData;
+    int numLines = 0;
+
+    bool openChanger = false;
+    int fileCount = 0;
 
     ImGui::FileBrowser fileDialog(ImGuiFileBrowserFlags_SelectDirectory | ImGuiFileBrowserFlags_ConfirmOnEnter);
-    //fileDialog.SetTypeFilters({ ".gitignore" });
+    std::filesystem::path fileName;
+    bool open_not_a_repo = false;
     fileDialog.SetTitle("Select path to repo");
-    std::string workPath = "";
-    std::string readPath = "";
-
-    bool open = 0;
-    ImFont* previousFont = ImGui::GetFont();
+    std::filesystem::path workPath = "";
 
     TextEditor editor;
     auto lang = TextEditor::LanguageDefinition::CPlusPlus();
     editor.SetLanguageDefinition(lang);
+    editor.SetReadOnly(true);
+    editor.SetImGuiChildIgnored(true);
+
+    bool open = 0;
+
+    if (std::filesystem::exists("settings.txt")) {
+        std::ifstream settings("settings.txt");
+        settings >> workPath;
+        if (std::filesystem::exists(workPath / ".git")) {
+            for (const auto& entry : std::filesystem::directory_iterator(workPath / "to_review")) {
+                if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
+                    ++fileCount;
+                    if (fileCount == 1) {
+                        fileName = entry.path().stem();
+                    }
+                }
+            }
+            std::ifstream readFirstFileTo_review((workPath / "to_review" / fileName).replace_extension(".cpp"));
+            std::ifstream readFirstFileReview((workPath / "review" / fileName).replace_extension(".txt"));
+            int num;
+            std::string comment;
+            while (std::getline(readOneChar(readFirstFileReview >> num), comment).good()) reviewData[num] = comment;
+            if (fileCount == 0) numLines = 0; else numLines = std::count(std::istreambuf_iterator<char>(readFirstFileTo_review), std::istreambuf_iterator<char>(), '\n');
+            readFirstFileTo_review.seekg(0, std::ios::beg);
+            std::string str((std::istreambuf_iterator<char>(readFirstFileTo_review)), std::istreambuf_iterator<char>());
+            editor.SetText(str);
+        }
+        else {
+            workPath = "";
+        }
+    }
+    else {
+        std::string err = "sth went wrong";
+    }
+    std::filesystem::path readPath = workPath;
 
 #ifdef __EMSCRIPTEN__
     io.IniFilename = nullptr;
@@ -117,11 +152,6 @@ int main(int, char**)
     while (!glfwWindowShouldClose(window))
 #endif
     {
-        // Poll and handle events (inputs, window resize, etc.)
-        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
-        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
-        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -130,37 +160,16 @@ int main(int, char**)
 
         int x, y;
         glfwGetWindowSize(window, &x, &y);
-        //glfwSetFont();
 
         {
-            //glfwSetFont();
+            ImGui::SetNextWindowPos(ImVec2(x / 2., 0));
+            ImGui::SetNextWindowSize(ImVec2(x / 2., 0.71 * (globalScale * 37 + 18) / 1920 * x));
+            bool oi = true;
+            ImGui::Begin("Main", &oi, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+            ImGui::SetWindowFontScale(globalScale * x / 1920);
+            ImGui::Text("Write your comments here ");
 
-            ImGui::SetNextWindowPos(ImVec2((float)(x) / 2, 0), 0, ImVec2(0, 0));
-            ImGui::SetNextWindowSize(ImVec2((float)(x) / 2, y), 0);
-
-
-            ImGui::Begin("Main");
-            ImGui::SetWindowFontScale((float)(x) / 1920);
-
-            if (ImGui::Button("Add comment"))
-                data.resize(data.size() + 1);
-
-            ImGui::Text("Write your comments here");
-
-            for (int i = 0; i < data.size(); ++i) {
-                int& v = data[i].first;
-                if (ImGui::Button((std::string("Remove comment ") + std::to_string(i + 1)).c_str())) {
-                    data.erase(data.begin() + i);
-                    --i;
-                    continue;
-                }
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(150);
-                ImGui::InputInt((std::string("num ") + std::to_string(i + 1)).c_str(), &v);
-                ImGui::SameLine();
-                ImGui::InputTextWithHint((std::string("com ") + std::to_string(i + 1)).c_str(), ("comment " + std::to_string(i + 1)).c_str(), data[i].second.data(), 128);
-            }
-
+            /*ImGui::SameLine();
             if (ImGui::Button("Send review")) {
                 if (workPath == "") {
                     open = true;
@@ -168,39 +177,116 @@ int main(int, char**)
                 else {
                     send();
                 }
-            }
+            }*/
+
             ImGui::SameLine();
-            bool op = false;
             if (ImGui::Button("Set path to repo")) {
-                op = true;
                 fileDialog.Open();
-                //fileDialog.
             }
             fileDialog.Display();
-            
-            if (workPath != readPath) {
-                if (!std::filesystem::exists(workPath + std::string("\\1691C.cpp"))) {
-                    workPath = readPath;
-                    
-                }
-                else {
-                    readPath = workPath;
-                    std::ifstream t(readPath + std::string("\\1691C.cpp"), std::ios_base::in | std::ios_base::out);
-                    if (t.good())
-                    {
-                        std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-                        editor.SetText(str);
+
+            ImGui::SameLine();
+            if (ImGui::Button("Change review file")) {
+                openChanger = true;
+            }
+            if (openChanger) {
+                ImGui::SetNextWindowPos(ImVec2(0.4 * x, 0.4 * y));
+                ImGui::SetNextWindowSize(ImVec2(0.2 * x, 0.2 * y));
+                ImGui::Begin("File changer window", &openChanger, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+                for (const auto& entry : std::filesystem::directory_iterator(workPath / "to_review")) {
+                    if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
+                        if (ImGui::Button((std::string("Review file ") + entry.path().filename().string()).c_str(), ImVec2(globalScale * 120 / 1920 * x, globalScale * 13 / 1920 * x))) {
+                            openChanger = false;
+
+                            std::ofstream review((workPath / "review" / fileName).replace_extension(".txt"));
+                            for (auto el : reviewData) {
+                                if (el.second.size() != 0) {
+                                    review << el.first << ' ' << el.second << std::endl;
+                                }
+                            }
+                            reviewData.clear();
+
+                            fileName = entry.path().stem();
+
+                            std::ifstream readFirstFileReview((workPath / "review" / fileName).replace_extension(".txt"));
+                            int num;
+                            std::string comment;
+                            while (std::getline(readOneChar(readFirstFileReview >> num), comment).good()) reviewData[num] = comment;
+
+                            std::ifstream readFirstFileTo_review((workPath / "to_review" / fileName).replace_extension(".cpp"));
+                            if (fileCount == 0) numLines = 0; else numLines = std::count(std::istreambuf_iterator<char>(readFirstFileTo_review), std::istreambuf_iterator<char>(), '\n');
+                            readFirstFileTo_review.seekg(0, std::ios::beg);
+                            std::string str((std::istreambuf_iterator<char>(readFirstFileTo_review)), std::istreambuf_iterator<char>());
+                            editor.SetText(str);
+                        }
                     }
                 }
+                
+                if (ImGui::Button("Close")) {
+                    openChanger = false;
+                }
+                ImGui::End();
             }
-            
-            //fileDialog.Close();
+
+            if (workPath != readPath) {
+                workPath = readPath;
+                fileCount = 0;
+                for (const auto& entry : std::filesystem::directory_iterator(workPath / "to_review")) {
+                    if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
+                        ++fileCount;
+                        if (fileCount == 1) {
+                            fileName = entry.path().stem();
+                        }
+                    }
+                }
+                std::ifstream readFirstFileTo_review((workPath / "to_review" / fileName).replace_extension(".cpp"));
+                if (fileCount == 0) numLines = 0; else numLines = std::count(std::istreambuf_iterator<char>(readFirstFileTo_review), std::istreambuf_iterator<char>(), '\n');
+                readFirstFileTo_review.seekg(0, std::ios::beg);
+                std::string str((std::istreambuf_iterator<char>(readFirstFileTo_review)), std::istreambuf_iterator<char>());
+                editor.SetText(str);
+            }
+
+            ImGui::End();
+
+            ImGui::SetNextWindowPos(ImVec2(x / 2., 0.71 * (globalScale * 37 + 18) / 1920 * x));
+            ImGui::SetNextWindowSize(ImVec2(x / 2., y - 0.71 * (globalScale * 37 + 18) / 1920 * x));
+            ImGui::Begin("Comments", &oi, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+            ImGui::SetWindowFontScale(0.88 * globalScale * x / 1920);
+
+            ImGui::SetCursorPosY(globalScale * 13 / 1920 * x * numLines);
+            ImGui::Dummy(ImVec2(0, globalScale * 22 / 1920 * x));
+
+            if (toScrollComments) {
+                ImGui::SetScrollY(scrollEditor * ImGui::GetScrollMaxY());
+                toScrollComments = false;
+            }
+
+            int rem = 0;
+            for (auto el : reviewData) {
+                int v = el.first;
+                ImGui::SetCursorPos(ImVec2(0, globalScale * 13 / 1920 * x * (v - 1)));
+                if (ImGui::Button((std::string("Remove comment ") + std::to_string(v)).c_str(), ImVec2(globalScale * 120 / 1920 * x, globalScale * 13 / 1920 * x))) {
+                    rem = v;
+                }
+                ImGui::SameLine();
+                char* tmp = new char(128);
+                tmp = const_cast<char*>(el.second.c_str());
+                ImGui::InputTextWithHint((std::string("##com ") + std::to_string(v)).c_str(), ("comment " + std::to_string(v)).c_str(), tmp, 128);
+                el.second = tmp;
+                reviewData[v] = tmp;
+            }
+            if (rem) {
+                reviewData.extract(rem);
+            }
+            prevScrollComments = scrollComments;
+            scrollComments = ImGui::GetScrollY() / ImGui::GetScrollMaxY();
             ImGui::End();
 
             if (open) {
-                ImGui::SetNextWindowSize(ImVec2(200, 200));
-                ImGui::Begin("Didn't set path for review yet");
-                ImGui::SetWindowFontScale((float)(x) / 1920);
+                ImGui::SetNextWindowPos(ImVec2(0.4 * x, 0.4 * y));
+                ImGui::SetNextWindowSize(ImVec2(0.2 * x, 0.2 * y));
+                ImGui::Begin("Didn't set path for review yet", &open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+                ImGui::SetWindowFontScale(globalScale * x / 1920);
                 if (ImGui::Button("Close")) {
                     open = false;
                 }
@@ -209,50 +295,25 @@ int main(int, char**)
         }
 
         auto cpos = editor.GetCursorPosition();
-
         ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
-        ImGui::SetNextWindowSize(ImVec2((float)(x) / 2, y), 0);
+        ImGui::SetNextWindowSize(ImVec2(x / 2., y), 0);
 
         if (workPath != "") {
-            ImGui::Begin("Text Editor Demo", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar);
-            ImGui::SetWindowFontScale((float)(x) / 1920);
-            /*ImGui::SetWindowSize(ImVec2(800, 600), ImGuiCond_FirstUseEver); */
+            ImGui::Begin("Text Editor", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+            ImGui::SetWindowFontScale(globalScale * x / 1920);
             if (ImGui::BeginMenuBar())
             {
+
                 if (ImGui::BeginMenu("File"))
                 {
-                    /*if (ImGui::MenuItem("Save"))
-                    {
-                        auto textToSave = editor.GetText();
-                        /// save text....
-                    }*/
                     if (ImGui::MenuItem("Quit", "Alt-F4"))
                         break;
                     ImGui::EndMenu();
                 }
                 if (ImGui::BeginMenu("Edit"))
                 {
-                    bool ro = editor.IsReadOnly();
-                    editor.SetReadOnly(ro);
-                    /*if (ImGui::MenuItem("Read-only mode", nullptr, &ro))
-                        editor.SetReadOnly(ro);
-                    ImGui::Separator();*/
-
-                    /*if (ImGui::MenuItem("Undo", "ALT-Backspace", nullptr, !ro && editor.CanUndo()))
-                        editor.Undo();
-                    if (ImGui::MenuItem("Redo", "Ctrl-Y", nullptr, !ro && editor.CanRedo()))
-                        editor.Redo();
-
-                    ImGui::Separator();*/
-
                     if (ImGui::MenuItem("Copy", "Ctrl-C", nullptr, editor.HasSelection()))
                         editor.Copy();
-                    /*if (ImGui::MenuItem("Cut", "Ctrl-X", nullptr, !ro && editor.HasSelection()))
-                        editor.Cut();
-                    if (ImGui::MenuItem("Delete", "Del", nullptr, !ro && editor.HasSelection()))
-                        editor.Delete();
-                    if (ImGui::MenuItem("Paste", "Ctrl-V", nullptr, !ro && ImGui::GetClipboardText() != nullptr))
-                        editor.Paste();*/
 
                     ImGui::Separator();
 
@@ -274,19 +335,70 @@ int main(int, char**)
                 }
                 ImGui::EndMenuBar();
             }
+            char mbstr[256];
+            fileName.replace_extension(".cpp");
+            wcstombs(mbstr, fileName.c_str(), sizeof(mbstr));
+            fileName.replace_extension("");
             ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1, editor.GetTotalLines(),
                 editor.IsOverwrite() ? "Ovr" : "Ins",
                 editor.CanUndo() ? "*" : " ",
-                editor.GetLanguageDefinition().mName.c_str(), (workPath + std::string("\\1691C.cpp")).c_str());
+                editor.GetLanguageDefinition().mName.c_str(), mbstr);
 
+            if ((ImGui::IsKeyPressed(ImGuiKey_Tab) && ImGui::GetIO().KeyCtrl)) {
+                int line = editor.GetCursorPosition().mLine + 1;
+
+                if (reviewData.find(line) == reviewData.end()) {
+                    reviewData[line] = "";
+                }
+            }
+            ImGui::BeginChild("TextEditor", ImVec2(0, 0), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NoMove);
+            if (toScrollEditor) {
+                ImGui::SetScrollY(scrollComments * ImGui::GetScrollMaxY());
+                toScrollEditor = false;
+            }
             editor.Render("TextEditor");
+            prevScrollEditor = scrollEditor;
+            scrollEditor = ImGui::GetScrollY() / ImGui::GetScrollMaxY();
+            ImGui::EndChild();
+
+            if (io.KeyCtrl) {
+                globalScale += io.MouseWheel * 0.1f;
+                globalScale = max(0.8f, globalScale);
+            }
+
             ImGui::End();
         }
 
         if (fileDialog.HasSelected())
         {
-            workPath = fileDialog.GetSelected().string();
-            fileDialog.Close();
+            if (std::filesystem::exists(fileDialog.GetSelected() / ".git")) {
+                readPath = fileDialog.GetSelected();
+            }
+            else {
+                open_not_a_repo = true;
+                fileDialog.Close();
+            }
+        }
+        if (open_not_a_repo) {
+            ImGui::SetNextWindowPos(ImVec2(0.4 * x, 0.4 * y));
+            ImGui::SetNextWindowSize(ImVec2(0.2 * x, 0.2 * y));
+            ImGui::Begin("Not a git repo");
+            if (ImGui::Button("Close")) {
+                open_not_a_repo = false;
+                fileDialog.Open();
+            }
+            ImGui::End();
+        }
+
+        if (std::abs(scrollEditor - scrollComments) > 2.0 / y) {
+            double xpos, ypos;
+            glfwGetCursorPos(window, &xpos, &ypos);
+            if (prevScrollEditor != scrollEditor) {
+                toScrollComments = true;
+            }
+            else {
+                toScrollEditor = true;
+            }
         }
 
         ImGui::Render();
@@ -302,6 +414,17 @@ int main(int, char**)
 #ifdef __EMSCRIPTEN__
     EMSCRIPTEN_MAINLOOP_END;
 #endif
+
+    std::ofstream settings("settings.txt");
+    settings << workPath;
+    if (workPath != "") {
+        std::ofstream review((workPath / "review" / fileName).replace_extension(".txt"));
+        for (auto el : reviewData) {
+            if (el.second.size() != 0) {
+                review << el.first << ' ' << el.second << std::endl;
+            }
+        }
+    }
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
