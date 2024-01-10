@@ -11,6 +11,7 @@
 #include <filesystem>
 #include <cstring>
 #include <cassert>
+#include <vector>
 
 namespace git {
     int Error(const git_error* err, int error, const std::filesystem::path& local_path);
@@ -48,11 +49,11 @@ namespace git {
 
     int Merge(const std::filesystem::path& local_path_to_repo);
 
-    void CloneByFile(const std::string& path_to_urls_file, const std::string& local_path = ".");
+    void CloneByFile(const std::filesystem::path& path_to_urls_file, const std::filesystem::path& local_path = ".");
 
-    void PullByFile(const std::string& filename);
+    void PullAll(const std::filesystem::path& path_to_all_repos, const std::vector<std::string>& urls)
 
-    void PushByFile(const std::string& path_to_file);
+    void PushAll(const std::filesystem::path& path_to_all_repos, const std::vector<std::string>& urls)
 
     static int32_t total_repos_count = 0, current_repo_pos = 0;
 

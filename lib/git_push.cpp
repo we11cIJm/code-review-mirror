@@ -41,16 +41,10 @@ namespace git {
         return 0;
     }
 
-    void PushByFile(const std::string& path_to_file) {
-        std::ifstream input(path_to_file);
-        if (!input.is_open()) {
-            throw std::invalid_argument("Cannot open file " + path_to_file);
-        }
-
-        std::string repo_url;
-        std::string message = "files for review";
-        while (input >> repo_url) {
-            std::filesystem::path full_path = "repos" / static_cast<std::filesystem::path>(GetRepoName(repo_url));
+    void PushAll(const std::filesystem::path& path_to_all_repos, const std::vector<std::string>& urls) {
+        std::string message = "files for review has been sent";
+        for (auto& url : urls) {
+            std::filesystem::path full_path = "repos" / static_cast<std::filesystem::path>(GetRepoName(url));
             AddCommitPush(full_path, message);
 
             ++current_repo_pos;

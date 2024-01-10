@@ -23,7 +23,7 @@ namespace git {
         return error;
     }
 
-    void CloneByFile(const std::string& path_to_urls_file, const std::string& local_path /* = "." */) {
+    void CloneByFile(const std::filesystem::path& path_to_urls_file, const std::filesystem::path& local_path /* = "." */) {
         std::ifstream input(path_to_urls_file);
         if (!input.is_open()) {
             throw std::invalid_argument("Cannot open file " + path_to_urls_file);
