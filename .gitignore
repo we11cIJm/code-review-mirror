@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+out/
+.vs/
+
+bin/
+bin.rel/
+bin.dbg/
+bin.relwithdbg/
