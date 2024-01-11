@@ -1,9 +1,12 @@
+#define NOMINMAX
+
 #include <fstream>
 #include <vector>
 #include <string>
 #include <filesystem>
 #include <algorithm>
 #include <iostream>
+#include <cmath>
 
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
@@ -167,11 +170,8 @@ int main(int, char**)
                 openModeChooser = true;
             }
             for (const auto& entry : std::filesystem::directory_iterator(workPath)) {
-                auto mbstr = entry.path().filename().c_str();
-//                char mbstr[256];
-//                wcstombs(mbstr, entry.path().filename().c_str(), sizeof(mbstr));
-                if (std::filesystem::exists(entry.path() / ".git") && ImGui::Button(mbstr)) {
-                    repoName = mbstr;
+                if (std::filesystem::exists(entry.path() / ".git") && ImGui::Button(entry.path().string().c_str())) {
+                    repoName = entry.path();
                     openPersonChooser = false;
                     openFileChooser = true;
                 }
@@ -191,12 +191,9 @@ int main(int, char**)
             }
             int fileCount = 0;
             for (const auto& entry : std::filesystem::directory_iterator(workPath / repoName / "to_review")) {
-                auto mbstr = entry.path().filename().c_str();
-//                char mbstr[256];
-//                wcstombs(mbstr, entry.path().filename().c_str(), sizeof(mbstr));
                 if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
                     ++fileCount;
-                    if (ImGui::Button(mbstr)) {
+                    if (ImGui::Button(entry.path().string().c_str())) {
                         fileName = entry.path().stem();
                         openFileChooser = false;
                         openEditor = true;

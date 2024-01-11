@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/imguicolortextedit-populate"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/47e6f67520ce47565f0c63b5767bea1a/imguicolortextedit-populate.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/08cfce09b57a8794a6dc90877f8c0a76/imguicolortextedit-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/53c7135c4b8d65f659166dae8825eab0/imguicolortextedit-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/53c7135c4b8d65f659166dae8825eab0/imguicolortextedit-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/53c7135c4b8d65f659166dae8825eab0/imguicolortextedit-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/53c7135c4b8d65f659166dae8825eab0/imguicolortextedit-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/53c7135c4b8d65f659166dae8825eab0/imguicolortextedit-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/53c7135c4b8d65f659166dae8825eab0/imguicolortextedit-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/53c7135c4b8d65f659166dae8825eab0/imguicolortextedit-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/53c7135c4b8d65f659166dae8825eab0/imguicolortextedit-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"imguicolortextedit-populate"
+		],
+		"name" : "imguicolortextedit-populate"
+	}
+}

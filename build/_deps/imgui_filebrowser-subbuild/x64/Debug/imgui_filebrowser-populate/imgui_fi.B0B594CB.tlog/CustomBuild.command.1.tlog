@@ -1,0 +1,152 @@
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\4E28AF44C68C41B1AD935F554816BFF7\IMGUI_FILEBROWSER-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/tmp/imgui_filebrowser-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/Debug/imgui_filebrowser-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\4E28AF44C68C41B1AD935F554816BFF7\IMGUI_FILEBROWSER-POPULATE-DOWNLOAD.RULE
+setlocal
+cd C:\Users\artem\code-review\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -P C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/download-imgui_filebrowser-populate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -P C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/verify-imgui_filebrowser-populate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -P C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/extract-imgui_filebrowser-populate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/Debug/imgui_filebrowser-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\4E28AF44C68C41B1AD935F554816BFF7\IMGUI_FILEBROWSER-POPULATE-UPDATE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/Debug/imgui_filebrowser-populate-update
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\4E28AF44C68C41B1AD935F554816BFF7\IMGUI_FILEBROWSER-POPULATE-PATCH.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/Debug/imgui_filebrowser-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\4E28AF44C68C41B1AD935F554816BFF7\IMGUI_FILEBROWSER-POPULATE-CONFIGURE.RULE
+setlocal
+cd C:\Users\artem\code-review\build\_deps\imgui_filebrowser-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/Debug/imgui_filebrowser-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\4E28AF44C68C41B1AD935F554816BFF7\IMGUI_FILEBROWSER-POPULATE-BUILD.RULE
+setlocal
+cd C:\Users\artem\code-review\build\_deps\imgui_filebrowser-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/Debug/imgui_filebrowser-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\4E28AF44C68C41B1AD935F554816BFF7\IMGUI_FILEBROWSER-POPULATE-INSTALL.RULE
+setlocal
+cd C:\Users\artem\code-review\build\_deps\imgui_filebrowser-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/Debug/imgui_filebrowser-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\4E28AF44C68C41B1AD935F554816BFF7\IMGUI_FILEBROWSER-POPULATE-TEST.RULE
+setlocal
+cd C:\Users\artem\code-review\build\_deps\imgui_filebrowser-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/Debug/imgui_filebrowser-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\C1D87F4B42BC1F408AA793EF57CADA2E\IMGUI_FILEBROWSER-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/Debug/imgui_filebrowser-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate-prefix/src/imgui_filebrowser-populate-stamp/Debug/imgui_filebrowser-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\D78A4E875E3AE36AF5D156111B4E4644\IMGUI_FILEBROWSER-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild -BC:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild --check-stamp-file C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

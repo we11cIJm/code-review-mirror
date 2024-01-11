@@ -1,0 +1,14 @@
+C:/Users/artem/code-review/build/CMakeFiles/INSTALL.dir
+C:/Users/artem/code-review/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/artem/code-review/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/artem/code-review/build/git/CMakeFiles/INSTALL.dir
+C:/Users/artem/code-review/build/git/lib/CMakeFiles/gitlib.dir
+C:/Users/artem/code-review/build/git/lib/CMakeFiles/INSTALL.dir
+C:/Users/artem/code-review/build/git/bin/CMakeFiles/main.dir
+C:/Users/artem/code-review/build/git/bin/CMakeFiles/INSTALL.dir
+C:/Users/artem/code-review/build/gui/CMakeFiles/filebrowser.dir
+C:/Users/artem/code-review/build/gui/CMakeFiles/ColorEditor.dir
+C:/Users/artem/code-review/build/gui/CMakeFiles/app.dir
+C:/Users/artem/code-review/build/gui/CMakeFiles/admin_app.dir
+C:/Users/artem/code-review/build/gui/CMakeFiles/INSTALL.dir
+C:/Users/artem/code-review/build/gui/CMakeFiles/ALL_BUILD.dir

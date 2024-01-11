@@ -11,7 +11,7 @@ namespace git {
         git_reference* ref = nullptr;
         git_signature* signature = nullptr;
 
-        int error = git_repository_open(&repo, local_path_to_repo.c_str());
+        int error = git_repository_open(&repo, local_path_to_repo.string().c_str());
         if (error != 0) {
             CleanUp(repo, index, tree, parent, ref, nullptr, signature);
             return Error(git_error_last(), error, local_path_to_repo);

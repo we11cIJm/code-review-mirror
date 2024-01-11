@@ -1,0 +1,3 @@
+C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/imguicolortextedit-populate.dir
+C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/ALL_BUILD.dir
+C:/Users/artem/code-review/build/_deps/imguicolortextedit-subbuild/CMakeFiles/ZERO_CHECK.dir

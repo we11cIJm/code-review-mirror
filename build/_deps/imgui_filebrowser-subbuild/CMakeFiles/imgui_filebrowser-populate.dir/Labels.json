@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/imgui_filebrowser-populate"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/d78a4e875e3ae36af5d156111b4e4644/imgui_filebrowser-populate.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/c1d87f4b42bc1f408aa793ef57cada2e/imgui_filebrowser-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/4e28af44c68c41b1ad935f554816bff7/imgui_filebrowser-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/4e28af44c68c41b1ad935f554816bff7/imgui_filebrowser-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/4e28af44c68c41b1ad935f554816bff7/imgui_filebrowser-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/4e28af44c68c41b1ad935f554816bff7/imgui_filebrowser-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/4e28af44c68c41b1ad935f554816bff7/imgui_filebrowser-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/4e28af44c68c41b1ad935f554816bff7/imgui_filebrowser-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/4e28af44c68c41b1ad935f554816bff7/imgui_filebrowser-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/4e28af44c68c41b1ad935f554816bff7/imgui_filebrowser-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"imgui_filebrowser-populate"
+		],
+		"name" : "imgui_filebrowser-populate"
+	}
+}

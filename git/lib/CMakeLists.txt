@@ -10,11 +10,11 @@ set(source_files
     help_stuff.cpp
 )
 
-add_library(${PROJECT_NAME} ${source_files} include/BlindCodeReview/git.hpp)
+add_library(gitlib ${source_files} include/BlindCodeReview/git.hpp)
 
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(gitlib PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
     ${LIBGIT2_INCLUDE_DIRS} # including libgit2 headers
 )
-install(TARGETS ${PROJECT_NAME})
+install(TARGETS gitlib)

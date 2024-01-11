@@ -1,0 +1,10 @@
+^C:\USERS\ARTEM\CODE-REVIEW\BUILD\_DEPS\IMGUI_FILEBROWSER-SUBBUILD\CMAKEFILES\D78A4E875E3AE36AF5D156111B4E4644\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild -BC:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/imgui_filebrowser-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

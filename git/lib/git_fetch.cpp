@@ -7,7 +7,7 @@ namespace git {
         const git_indexer_progress* stats;
         git_fetch_options fetch_opts = GIT_FETCH_OPTIONS_INIT;
 
-        int error = git_repository_open(&repo, local_path_to_repo.c_str());
+        int error = git_repository_open(&repo, local_path_to_repo.string().c_str());
         if (error != 0) {
             CleanUp( repo, nullptr, nullptr, nullptr
                     , nullptr, nullptr, nullptr, remote);

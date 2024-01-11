@@ -11,9 +11,9 @@ namespace git {
         clone_opts.checkout_opts = checkout_opts;
         clone_opts.fetch_opts.callbacks.credentials = CredentialsCallback;
 
-        int error = git_clone(&cloned_repo, url, local_path.c_str(), &clone_opts);
+        int error = git_clone(&cloned_repo, url, local_path.string().c_str(), &clone_opts);
         if (error != 0) {
-            const std::string lp = local_path;
+            const std::string lp = local_path.string();
             CleanUp(cloned_repo);
             return Error(git_error_last(), error, lp.substr(lp.size() - GetRepoName(url).size(), lp.npos));
         } else if (cloned_repo) {
@@ -26,7 +26,7 @@ namespace git {
     void CloneByFile(const std::filesystem::path& path_to_urls_file, const std::filesystem::path& local_path /* = "." */) {
         std::ifstream input(path_to_urls_file);
         if (!input.is_open()) {
-            throw std::invalid_argument("Cannot open file " / path_to_urls_file); // TODO: fix argument
+            throw std::invalid_argument(("Cannot open file " / path_to_urls_file).string().c_str()); // TODO: fix argument
         }
 
         std::string url;

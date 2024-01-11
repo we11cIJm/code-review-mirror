@@ -12,7 +12,7 @@ namespace git {
                 1
         };
 
-        int error = git_repository_open(&repo, local_path_to_repo.c_str());
+        int error = git_repository_open(&repo, local_path_to_repo.string().c_str());
         if (error != 0) {
             CleanUp(repo, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, remote, &refspecs);
             return Error(git_error_last(), error, local_path_to_repo);
@@ -45,7 +45,7 @@ namespace git {
         std::string message = "files for review has been sent";
         for (auto& url : urls) {
             std::filesystem::path full_path = "repos" / static_cast<std::filesystem::path>(GetRepoName(url));
-            AddCommitPush(full_path, message);
+            AddCommitPush(full_path.string(), message);
 
             ++current_repo_pos;
             PrintProgressBar();

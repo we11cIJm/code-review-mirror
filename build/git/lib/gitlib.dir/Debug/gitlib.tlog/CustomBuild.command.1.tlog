@@ -1,0 +1,10 @@
+^C:\USERS\ARTEM\CODE-REVIEW\GIT\LIB\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/artem/code-review -BC:/Users/artem/code-review/build --check-stamp-file C:/Users/artem/code-review/build/git/lib/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

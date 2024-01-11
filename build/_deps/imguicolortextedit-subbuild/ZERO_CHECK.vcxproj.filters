@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\artem\code-review\build\_deps\imguicolortextedit-subbuild\CMakeFiles\47e6f67520ce47565f0c63b5767bea1a\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{0B20D716-35B2-30EC-A04D-235F6D2D50CB}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
