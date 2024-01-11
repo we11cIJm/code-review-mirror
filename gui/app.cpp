@@ -10,8 +10,8 @@
 #include <imgui_impl_opengl3.h>
 #include <stdio.h>
 
-#include "imgui-filebrowser/imfilebrowser.h"
-#include "ImGuiColorTextEdit/TextEditor.h"
+#include <imgui_filebrowser-src/imfilebrowser.h>
+#include <imguicolortextedit-src/TextEditor.h>
 
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
