@@ -5,4 +5,3 @@ pkg_check_modules(LIBGIT2 REQUIRED IMPORTED_TARGET libgit2)
 
 add_subdirectory(lib)
 add_subdirectory(bin)
-

@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 find_package(imgui REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(PkgConfig REQUIRED)
+include_directories(${LIBGIT2_INCLUDE_DIRS})
+pkg_check_modules(LIBGIT2 REQUIRED IMPORTED_TARGET libgit2)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -42,5 +45,5 @@ endif()
 add_executable(app app.cpp)
 add_executable(admin_app admin_app.cpp)
 
-target_link_libraries(app PRIVATE imgui::imgui ColorEditor filebrowser ${OPENGL_LIBRARIES} )
-target_link_libraries(admin_app PRIVATE imgui::imgui ColorEditor filebrowser ${OPENGL_LIBRARIES} )
+target_link_libraries(app PRIVATE imgui::imgui ColorEditor filebrowser ${OPENGL_LIBRARIES} gitlib)
+target_link_libraries(admin_app PRIVATE imgui::imgui ColorEditor filebrowser ${OPENGL_LIBRARIES} gitlib)

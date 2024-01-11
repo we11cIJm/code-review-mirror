@@ -16,6 +16,14 @@
 #include "imgui_filebrowser-src/imfilebrowser.h"
 #include "imguicolortextedit-src/TextEditor.h"
 
+#include <BlindCodeReview/git.hpp>
+
+#ifdef _WIN32
+bool win = true;
+#else
+bool win = false;
+#endif
+
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
@@ -29,15 +37,6 @@
 #ifdef __EMSCRIPTEN__
 #include "../libs/emscripten/emscripten_mainloop_stub.h"
 #endif
-
-
-void pullAll(std::filesystem::path root, std::vector<std::string> urlList) {
-
-}
-
-void pushAll(std::filesystem::path root, std::vector<std::string> urlList) {
-
-}
 
 void distribute() {
 
@@ -124,10 +123,15 @@ int main(int, char**)
     bool openEditor = false;
 
     ImGui::FileBrowser fileDialog(ImGuiFileBrowserFlags_SelectDirectory | ImGuiFileBrowserFlags_ConfirmOnEnter);
-    std::filesystem::path fileName;
     fileDialog.SetTitle("Select path to repo");
     std::filesystem::path workPath = "";
     std::filesystem::path repoName = "";
+    std::filesystem::path fileName = "";
+
+    ImGui::FileBrowser fileDialogUrl(ImGuiFileBrowserFlags_ConfirmOnEnter);
+    fileDialogUrl.SetTypeFilters({ ".txt" });
+    fileDialogUrl.SetTitle("Select path to txt file with urls");
+    std::filesystem::path urlPath = "";
 
     TextEditor editor;
     auto lang = TextEditor::LanguageDefinition::CPlusPlus();
@@ -170,7 +174,16 @@ int main(int, char**)
                 openModeChooser = true;
             }
             for (const auto& entry : std::filesystem::directory_iterator(workPath)) {
-                if (std::filesystem::exists(entry.path() / ".git") && ImGui::Button(entry.path().string().c_str())) {
+                const char* mbstr = nullptr;
+                if (win) {
+                    char tmp[256] = "";
+                    wcstombs(tmp, entry.path().filename().c_str(), 256);
+                    mbstr = tmp;
+                }
+                else {
+                    mbstr = entry.path().string().c_str();
+                }
+                if (std::filesystem::exists(entry.path() / ".git") && ImGui::Button(mbstr)) {
                     repoName = entry.path();
                     openPersonChooser = false;
                     openFileChooser = true;
@@ -193,7 +206,16 @@ int main(int, char**)
             for (const auto& entry : std::filesystem::directory_iterator(workPath / repoName / "to_review")) {
                 if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
                     ++fileCount;
-                    if (ImGui::Button(entry.path().string().c_str())) {
+                    const char* mbstr = nullptr;
+                    if (win) {
+                        char tmp[256] = "";
+                        wcstombs(tmp, entry.path().filename().c_str(), 256);
+                        mbstr = tmp;
+                    }
+                    else {
+                        mbstr = entry.path().string().c_str();
+                    }
+                    if (ImGui::Button(mbstr)) {
                         fileName = entry.path().stem();
                         openFileChooser = false;
                         openEditor = true;
@@ -257,15 +279,19 @@ int main(int, char**)
                 }
                 ImGui::EndMenuBar();
             }
-            auto mbstr = fileName.c_str();
-//            char mbstr[256];
+
             fileName.replace_extension(".cpp");
-//            wcstombs(mbstr, fileName.c_str(), sizeof(mbstr));
-            fileName.replace_extension("");
-            ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1, editor.GetTotalLines(),
+            ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s |", cpos.mLine + 1, cpos.mColumn + 1, editor.GetTotalLines(),
                 editor.IsOverwrite() ? "Ovr" : "Ins",
                 editor.CanUndo() ? "*" : " ",
-                editor.GetLanguageDefinition().mName.c_str(), mbstr);
+                editor.GetLanguageDefinition().mName.c_str()); ImGui::SameLine();
+            if (win) {
+                ImGui::Text("%ls", fileName.c_str());
+            }
+            else {
+                ImGui::Text("%s", fileName.c_str());
+            }
+            fileName.replace_extension("");
 
             ImGui::BeginChild("TextEditor", ImVec2(0, 0), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NoMove);
             if (toScrollEditor) {
@@ -346,21 +372,44 @@ int main(int, char**)
         }
         if (openMain) {
             ImGui::Begin("Main code", &openPersonChooser, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
-            if ((!cFiles && !sFiles && !cReviews || cReviews || cFiles) && ImGui::Button("Collect files")) {
+            if (std::filesystem::exists(urlPath) && std::filesystem::exists(workPath) &&
+               (!cFiles && !sFiles && !cReviews || cReviews || cFiles) && ImGui::Button("Collect files")) {
                 cFiles = true;
                 cReviews = false;
-                pullAll(workPath, std::vector<std::string>());
+
+                std::ifstream readUrl(urlPath);
+                std::string line;
+                std::vector<std::string> urlVec;
+                while (std::getline(readUrl, line)) {
+                    urlVec.push_back(line);
+                }
+                git::CloneByFile(urlPath, workPath);
+                git::PullAll(workPath, urlVec);
             }
-            if (cFiles && ImGui::Button("Send files")) {
+            if (std::filesystem::exists(urlPath) && std::filesystem::exists(workPath) && cFiles && ImGui::Button("Send files")) {
                 sFiles = true;
                 cFiles = false;
+
+                std::ifstream readUrl(urlPath);
+                std::string line;
+                std::vector<std::string> urlVec;
+                while (std::getline(readUrl, line)) {
+                    urlVec.push_back(line);
+                }
                 distribute();
-                pushAll(workPath, std::vector<std::string>());
+                git::PushAll(workPath, urlVec);
             }
-            if ((sFiles || cReviews) && ImGui::Button("Collect reviews")) {
+            if (std::filesystem::exists(urlPath) && std::filesystem::exists(workPath) && (sFiles || cReviews) && ImGui::Button("Collect reviews")) {
                 cReviews = true;
                 sFiles = false;
-                pullAll(workPath, std::vector<std::string>());
+
+                std::ifstream readUrl(urlPath);
+                std::string line;
+                std::vector<std::string> urlVec;
+                while (std::getline(readUrl, line)) {
+                    urlVec.push_back(line);
+                }
+                git::PullAll(workPath, urlVec);
             }
             ImGui::SameLine();
             //show statistics
@@ -385,14 +434,23 @@ int main(int, char**)
                 }
                 ImGui::End();
             }
+
             if (ImGui::Button("Set path to data folder")) {
                 fileDialog.Open();
             }
             fileDialog.Display();
-
             if (fileDialog.HasSelected())
             {
                 workPath = fileDialog.GetSelected();
+            }
+
+            if (ImGui::Button("Set path to url file")) {
+                fileDialogUrl.Open();
+            }
+            fileDialogUrl.Display();
+            if (fileDialogUrl.HasSelected())
+            {
+                urlPath = fileDialogUrl.GetSelected();
             }
 
             ImGui::End();
