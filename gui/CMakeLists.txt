@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(MyProject)
 
-# Установка стандарта C++11
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -9,14 +8,12 @@ find_package(imgui REQUIRED)
 find_package(OpenGL REQUIRED)
 
 include(FetchContent)
-# Загрузка imgui-filebrowser
 FetchContent_Declare(
     imgui_filebrowser
     URL https://github.com/AirGuanZ/imgui-filebrowser/archive/master.zip
 )
 FetchContent_MakeAvailable(imgui_filebrowser)
 if(NOT imgui_filebrowserContent_POPULATED)
-    message(>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>${CMAKE_CURRENT_BINARY_DIR})
     add_library(filebrowser INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/_deps/imgui_filebrowser-src/imfilebrowser.h)
     target_link_libraries(filebrowser INTERFACE imgui::imgui)
     set_property(TARGET filebrowser PROPERTY CXX_STANDARD 20)
@@ -26,7 +23,6 @@ if(NOT imgui_filebrowserContent_POPULATED)
     install(TARGETS filebrowser)
 endif()
 
-# Загрузка ImGuiColorTextEdit
 FetchContent_Declare(
     ImGuiColorTextEdit
     URL https://github.com/BalazsJako/ImGuiColorTextEdit/archive/master.zip
