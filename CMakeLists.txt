@@ -7,5 +7,13 @@ project(
     BlindCodeReview
     LANGUAGES CXX
 )
+
+find_package(imgui REQUIRED)
+find_package(OpenGL REQUIRED)
+
+find_package(PkgConfig REQUIRED)
+include_directories(${LIBGIT2_INCLUDE_DIRS})
+pkg_check_modules(LIBGIT2 REQUIRED IMPORTED_TARGET libgit2)
+
 add_subdirectory(git)
 add_subdirectory(gui)
