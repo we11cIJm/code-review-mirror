@@ -335,14 +335,13 @@ int main(int, char**)
                 }
                 ImGui::EndMenuBar();
             }
-            char mbstr[256];
+
             fileName.replace_extension(".cpp");
-            wcstombs(mbstr, fileName.c_str(), sizeof(mbstr));
-            fileName.replace_extension("");
             ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1, editor.GetTotalLines(),
-                editor.IsOverwrite() ? "Ovr" : "Ins",
-                editor.CanUndo() ? "*" : " ",
-                editor.GetLanguageDefinition().mName.c_str(), mbstr);
+                        editor.IsOverwrite() ? "Ovr" : "Ins",
+                        editor.CanUndo() ? "*" : " ",
+                        editor.GetLanguageDefinition().mName.c_str(), fileName.c_str());
+            fileName.replace_extension("");
 
             if ((ImGui::IsKeyPressed(ImGuiKey_Tab) && ImGui::GetIO().KeyCtrl)) {
                 int line = editor.GetCursorPosition().mLine + 1;
@@ -363,7 +362,7 @@ int main(int, char**)
 
             if (io.KeyCtrl) {
                 globalScale += io.MouseWheel * 0.1f;
-                globalScale = max(0.8f, globalScale);
+                globalScale = std::max(0.8f, globalScale);
             }
 
             ImGui::End();

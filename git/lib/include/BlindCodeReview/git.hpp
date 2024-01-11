@@ -51,9 +51,9 @@ namespace git {
 
     void CloneByFile(const std::filesystem::path& path_to_urls_file, const std::filesystem::path& local_path = ".");
 
-    void PullAll(const std::filesystem::path& path_to_all_repos, const std::vector<std::string>& urls)
+    void PullAll(const std::filesystem::path& path_to_all_repos, const std::vector<std::string>& urls);
 
-    void PushAll(const std::filesystem::path& path_to_all_repos, const std::vector<std::string>& urls)
+    void PushAll(const std::filesystem::path& path_to_all_repos, const std::vector<std::string>& urls);
 
     static int32_t total_repos_count = 0, current_repo_pos = 0;
 

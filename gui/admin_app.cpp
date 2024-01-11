@@ -167,8 +167,9 @@ int main(int, char**)
                 openModeChooser = true;
             }
             for (const auto& entry : std::filesystem::directory_iterator(workPath)) {
-                char mbstr[256];
-                wcstombs(mbstr, entry.path().filename().c_str(), sizeof(mbstr));
+                auto mbstr = entry.path().filename().c_str();
+//                char mbstr[256];
+//                wcstombs(mbstr, entry.path().filename().c_str(), sizeof(mbstr));
                 if (std::filesystem::exists(entry.path() / ".git") && ImGui::Button(mbstr)) {
                     repoName = mbstr;
                     openPersonChooser = false;
@@ -190,8 +191,9 @@ int main(int, char**)
             }
             int fileCount = 0;
             for (const auto& entry : std::filesystem::directory_iterator(workPath / repoName / "to_review")) {
-                char mbstr[256];
-                wcstombs(mbstr, entry.path().filename().c_str(), sizeof(mbstr));
+                auto mbstr = entry.path().filename().c_str();
+//                char mbstr[256];
+//                wcstombs(mbstr, entry.path().filename().c_str(), sizeof(mbstr));
                 if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
                     ++fileCount;
                     if (ImGui::Button(mbstr)) {
@@ -258,9 +260,10 @@ int main(int, char**)
                 }
                 ImGui::EndMenuBar();
             }
-            char mbstr[256];
+            auto mbstr = fileName.c_str();
+//            char mbstr[256];
             fileName.replace_extension(".cpp");
-            wcstombs(mbstr, fileName.c_str(), sizeof(mbstr));
+//            wcstombs(mbstr, fileName.c_str(), sizeof(mbstr));
             fileName.replace_extension("");
             ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1, editor.GetTotalLines(),
                 editor.IsOverwrite() ? "Ovr" : "Ins",
@@ -283,7 +286,7 @@ int main(int, char**)
 
             if (io.KeyCtrl) {
                 globalScale += io.MouseWheel * 0.1f;
-                globalScale = max(0.8f, globalScale);
+                globalScale = std::max(0.8f, globalScale);
             }
 
             ImGui::End();
