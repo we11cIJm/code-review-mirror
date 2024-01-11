@@ -18,19 +18,13 @@
 
 #include <BlindCodeReview/git.hpp>
 
-#ifdef _WIN32
-bool win = true;
-#else
-bool win = false;
-#endif
-
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
 #endif
 #include <GLFW/glfw3.h>
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
+#if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_UNICODE_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
@@ -139,9 +133,9 @@ int main(int, char**)
     editor.SetReadOnly(true);
     editor.SetImGuiChildIgnored(true);
 
-    if (std::filesystem::exists("settings.txt")) {
-        std::ifstream settings("settings.txt");
-        settings >> workPath;
+    if (std::filesystem::exists("admin_settings.txt")) {
+        std::ifstream adminSettings("admin_settings.txt");
+        adminSettings >> workPath;
     }
     else {
         std::string err = "sth went wrong";
@@ -164,6 +158,7 @@ int main(int, char**)
         glfwGetWindowSize(window, &x, &y);
 
         if (openPersonChooser) {
+            ImGui::SetNextWindowSize(ImVec2(x / 2, y / 2));
             ImGui::Begin("Reviewer", &openPersonChooser, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
             ImGui::SetWindowFontScale(globalScale * x / 1920);
 
@@ -175,14 +170,13 @@ int main(int, char**)
             }
             for (const auto& entry : std::filesystem::directory_iterator(workPath)) {
                 const char* mbstr = nullptr;
-                if (win) {
-                    char tmp[256] = "";
-                    wcstombs(tmp, entry.path().filename().c_str(), 256);
-                    mbstr = tmp;
-                }
-                else {
-                    mbstr = entry.path().string().c_str();
-                }
+#ifdef _UNICODE
+                char tmp[256] = "";
+                wcstombs(tmp, entry.path().filename().c_str(), 256);
+                mbstr = tmp;
+#else
+                mbstr = entry.path().string().c_str();
+#endif
                 if (std::filesystem::exists(entry.path() / ".git") && ImGui::Button(mbstr)) {
                     repoName = entry.path();
                     openPersonChooser = false;
@@ -193,6 +187,7 @@ int main(int, char**)
             ImGui::End();
         }
         if (openFileChooser) {
+            ImGui::SetNextWindowSize(ImVec2(x / 2, y / 2));
             ImGui::Begin("PersonChooser", &openFileChooser, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
             ImGui::SetWindowFontScale(globalScale * x / 1920);
 
@@ -207,14 +202,13 @@ int main(int, char**)
                 if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
                     ++fileCount;
                     const char* mbstr = nullptr;
-                    if (win) {
-                        char tmp[256] = "";
-                        wcstombs(tmp, entry.path().filename().c_str(), 256);
-                        mbstr = tmp;
-                    }
-                    else {
-                        mbstr = entry.path().string().c_str();
-                    }
+#ifdef _UNICODE
+                    char tmp[256] = "";
+                    wcstombs(tmp, entry.path().filename().c_str(), 256);
+                    mbstr = tmp;
+#else
+                    mbstr = entry.path().string().c_str();
+#endif
                     if (ImGui::Button(mbstr)) {
                         fileName = entry.path().stem();
                         openFileChooser = false;
@@ -285,12 +279,11 @@ int main(int, char**)
                 editor.IsOverwrite() ? "Ovr" : "Ins",
                 editor.CanUndo() ? "*" : " ",
                 editor.GetLanguageDefinition().mName.c_str()); ImGui::SameLine();
-            if (win) {
-                ImGui::Text("%ls", fileName.c_str());
-            }
-            else {
-                ImGui::Text("%s", fileName.c_str());
-            }
+#ifdef _UNICODE
+            ImGui::Text("%ls", fileName.c_str());
+#else
+            ImGui::Text("%s", fileName.c_str());
+#endif
             fileName.replace_extension("");
 
             ImGui::BeginChild("TextEditor", ImVec2(0, 0), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NoMove);
@@ -361,6 +354,8 @@ int main(int, char**)
             ImGui::End();
         }
         if (openRespondent) {
+            ImGui::SetNextWindowSize(ImVec2(x / 2, y / 2));
+
             ImGui::Begin("Respondent", &openRespondent, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
             ImGui::Text("Stay tuned");
             if (ImGui::Button("Return")) {
@@ -371,6 +366,9 @@ int main(int, char**)
             ImGui::End();
         }
         if (openMain) {
+            ImGui::SetNextWindowPos(ImVec2(0, 0));
+            ImGui::SetNextWindowSize(ImVec2(x, y));
+
             ImGui::Begin("Main code", &openPersonChooser, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
             if (std::filesystem::exists(urlPath) && std::filesystem::exists(workPath) &&
                (!cFiles && !sFiles && !cReviews || cReviews || cFiles) && ImGui::Button("Collect files")) {
@@ -456,6 +454,8 @@ int main(int, char**)
             ImGui::End();
         }
         if (openModeChooser) {
+            ImGui::SetNextWindowSize(ImVec2(x / 2, y / 2));
+
             ImGui::Begin("Mode", &openModeChooser, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
 
             ImGui::Text("Do you want to choose a reviewer or a respondent?");
@@ -500,8 +500,8 @@ int main(int, char**)
     EMSCRIPTEN_MAINLOOP_END;
 #endif
 
-    std::ofstream settings("settings.txt");
-    settings << workPath;
+    std::ofstream adminSettings("admin_settings.txt");
+    adminSettings << workPath;
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
