@@ -1,3 +1,0 @@
-C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/imgui_filebrowser-populate.dir
-C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/ALL_BUILD.dir
-C:/Users/artem/code-review/build/_deps/imgui_filebrowser-subbuild/CMakeFiles/ZERO_CHECK.dir
