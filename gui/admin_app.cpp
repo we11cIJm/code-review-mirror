@@ -349,18 +349,18 @@ int main(int, char**)
             if ((!cFiles && !sFiles && !cReviews || cReviews || cFiles) && ImGui::Button("Collect files")) {
                 cFiles = true;
                 cReviews = false;
-                pullAll(std::filesystem::path(""), std::vector<std::string>());
+                pullAll(workPath, std::vector<std::string>());
             }
             if (cFiles && ImGui::Button("Send files")) {
                 sFiles = true;
                 cFiles = false;
                 distribute();
-                pushAll(std::filesystem::path(""), std::vector<std::string>());
+                pushAll(workPath, std::vector<std::string>());
             }
             if ((sFiles || cReviews) && ImGui::Button("Collect reviews")) {
                 cReviews = true;
                 sFiles = false;
-                pullAll(std::filesystem::path(""), std::vector<std::string>());
+                pullAll(workPath, std::vector<std::string>());
             }
             ImGui::SameLine();
             //show statistics
