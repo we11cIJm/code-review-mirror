@@ -24,7 +24,7 @@
 #endif
 #include <GLFW/glfw3.h>
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_UNICODE_FUNCTIONS)
+#if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
@@ -170,7 +170,7 @@ int main(int, char**)
             }
             for (const auto& entry : std::filesystem::directory_iterator(workPath)) {
                 const char* mbstr = nullptr;
-#ifdef _UNICODE
+#ifdef _WIN32
                 char tmp[256] = "";
                 wcstombs(tmp, entry.path().filename().c_str(), 256);
                 mbstr = tmp;
@@ -202,7 +202,7 @@ int main(int, char**)
                 if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
                     ++fileCount;
                     const char* mbstr = nullptr;
-#ifdef _UNICODE
+#ifdef _WIN32
                     char tmp[256] = "";
                     wcstombs(tmp, entry.path().filename().c_str(), 256);
                     mbstr = tmp;
@@ -279,7 +279,7 @@ int main(int, char**)
                 editor.IsOverwrite() ? "Ovr" : "Ins",
                 editor.CanUndo() ? "*" : " ",
                 editor.GetLanguageDefinition().mName.c_str()); ImGui::SameLine();
-#ifdef _UNICODE
+#ifdef _WIN32
             ImGui::Text("%ls", fileName.c_str());
 #else
             ImGui::Text("%s", fileName.c_str());

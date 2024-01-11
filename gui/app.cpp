@@ -15,12 +15,6 @@
 #include <imgui_filebrowser-src/imfilebrowser.h>
 #include <imguicolortextedit-src/TextEditor.h>
 
-#ifdef _WIN32
-const char* pathString = "%ls";
-#else
-const char* pathString = "%s";
-#endif
-
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
@@ -350,7 +344,12 @@ int main(int, char**)
                         editor.IsOverwrite() ? "Ovr" : "Ins",
                         editor.CanUndo() ? "*" : " ",
                         editor.GetLanguageDefinition().mName.c_str()); ImGui::SameLine();
-            ImGui::Text(pathString, fileName.c_str());
+#ifdef _WIN32
+            ImGui::Text("%ls", fileName.c_str());
+#else
+            ImGui::Text("%s", fileName.c_str());
+#endif
+            
             fileName.replace_extension("");
 
             if ((ImGui::IsKeyPressed(ImGuiKey_Tab) && ImGui::GetIO().KeyCtrl)) {
