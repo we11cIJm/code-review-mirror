@@ -39,6 +39,15 @@ std::istream& readOneChar(std::istream& input) {
     return input;
 }
 
+void InputTextWithHint(const std::string& label, const std::string& hint, std::string& data, ImGuiInputTextFlags flags = 0) {
+    char buffer[256];
+    strncpy(buffer, data.c_str(), sizeof(buffer));
+    buffer[sizeof(buffer) - 1] = '\0';
+
+    ImGui::InputTextWithHint(label.c_str(), hint.c_str(), buffer, sizeof(buffer), flags);
+    data = buffer;
+}
+
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
@@ -188,7 +197,7 @@ int main(int, char**)
             fileDialog.Display();
 
             ImGui::SameLine();
-            if (ImGui::Button("Change review file")) {
+            if (ImGui::Button("Change reviewing file")) {
                 openChanger = true;
             }
             if (openChanger) {
@@ -271,11 +280,7 @@ int main(int, char**)
                     rem = v;
                 }
                 ImGui::SameLine();
-                char* tmp = new char(128);
-                tmp = const_cast<char*>(el.second.c_str());
-                ImGui::InputTextWithHint((std::string("##com ") + std::to_string(v)).c_str(), ("comment " + std::to_string(v)).c_str(), tmp, 128);
-                el.second = tmp;
-                reviewData[v] = tmp;
+                InputTextWithHint("##com " + std::to_string(v), "comment " + std::to_string(v), reviewData[v]);
             }
             if (rem) {
                 reviewData.extract(rem);
@@ -369,11 +374,6 @@ int main(int, char**)
             scrollEditor = ImGui::GetScrollY() / ImGui::GetScrollMaxY();
             ImGui::EndChild();
 
-            if (io.KeyCtrl) {
-                globalScale += io.MouseWheel * 0.1f;
-                globalScale = std::max(0.8f, globalScale);
-            }
-
             ImGui::End();
         }
 
@@ -396,6 +396,11 @@ int main(int, char**)
                 fileDialog.Open();
             }
             ImGui::End();
+        }
+
+        if (io.KeyCtrl) {
+            globalScale += io.MouseWheel * 0.1f;
+            globalScale = std::max(0.8f, globalScale);
         }
 
         if (std::abs(scrollEditor - scrollComments) > 2.0 / y) {
