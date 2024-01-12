@@ -7,13 +7,14 @@ const char* url = "https://github.com/we11cIJm/testrepo.git";
 int main(int argc, char** argv) {
     git_libgit2_init();
 
-    std::string filename = "../urls.txt";
+    std::filesystem::path filename = "/home/kolya/Desktop/code/BlindCodeReview/build/git/urls.txt";
+//    std::string filename = "../urls.txt";
 //    std::string clone = "--clone";
 //    std::string push = "--push";
 //    std::string push_l = "-p";
 //    std::string pull = "--pull";
-
-    AddCommitPush("./testrepo", "try to push with deleted remotely files");
+    CloneByFile(filename, "/home/kolya/Desktop/coderepos");
+//    AddCommitPush("./testrepo", "try to push with deleted remotely files");
 
 //    if (argc < 2) {
 //        std::cout << "Nothing is called\n";

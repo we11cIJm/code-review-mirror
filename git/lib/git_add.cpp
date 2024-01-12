@@ -15,7 +15,7 @@ namespace git {
         int error = git_repository_open(&repo, local_path_to_repo.string().c_str());
         if (error != 0) {
             CleanUp(repo, index);
-            return Error(git_error_last(), error, local_path_to_repo);
+            return error;
         }
 
         // checks that last remote repo commit the same as last local repo commit
@@ -24,7 +24,7 @@ namespace git {
         error = git_repository_index(&index, repo);
         if (error != 0) {
             CleanUp(repo, index);
-            return Error(git_error_last(), error, local_path_to_repo);
+            return error;
         }
 
         git_index_add_all(index, nullptr, 0, nullptr, nullptr);

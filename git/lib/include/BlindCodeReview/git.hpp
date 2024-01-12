@@ -13,8 +13,12 @@
 #include <cassert>
 #include <vector>
 
+#ifndef PAT
+#define PAT "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"
+#endif
+
 namespace git {
-    int Error(const git_error* err, int error, const std::filesystem::path& local_path);
+    int Error(const git_error* err, int error, const std::filesystem::path& local_path, const std::string& repo_name);
 
     void CleanUp( git_repository* repo = nullptr, git_index* index = nullptr
             , git_tree* tree = nullptr, git_object* object = nullptr
@@ -31,7 +35,7 @@ namespace git {
             , const char* username_from_url
             , unsigned int allowed_types, void* payload);
 
-    int Clone(const char* url, const std::filesystem::path& local_path);
+    int Clone(const char* url, const std::filesystem::path& work_dir);
 
     void Check(git_repository* repo, const std::filesystem::path& local_path_to_repo);
 
@@ -41,7 +45,7 @@ namespace git {
 
     int Push(const std::filesystem::path& local_path_to_repo);
 
-    int AddCommitPush(const std::string& local_path_to_repo, const std::string& message);
+    int AddCommitPush(const std::filesystem::path& local_path_to_repo, const std::string& message);
 
     int Pull(const std::filesystem::path& local_path_to_repo);
 
@@ -55,9 +59,7 @@ namespace git {
 
     void PushAll(const std::filesystem::path& path_to_all_repos, const std::vector<std::string>& urls);
 
-    static int32_t total_repos_count = 0, current_repo_pos = 0;
-
-    void PrintProgressBar();
+    void PrintProgressBar(int32_t total_repos_count, int32_t current_repo_pos = 0);
 
 } // namespace git
 
@@ -71,11 +73,7 @@ namespace help_stuff {
 
     std::pair<const git_oid*, const git_oid*> GetLastCommits(git_repository* repo);
 
-    int ProgressCallback(const char* str, int len, void* data);
-
     int UpdateCallback(const char* refname, const git_oid* a, const git_oid* b, void* data);
-
-    int TransferProgressCallback(const git_indexer_progress* stats, void* payload);
 
     void MergeOptionsInit(struct MergeOptions* opts);
 

@@ -1,6 +1,22 @@
 #include <BlindCodeReview/git.hpp>
 
 namespace git {
+    int AddCommitPush(const std::filesystem::path& local_path_to_repo, const std::string& message) {
+        int error = Add(local_path_to_repo);
+        if (error != 0) {
+            return Error(git_error_last(), error, local_path_to_repo.parent_path(), local_path_to_repo.filename());
+        }
+        error = Commit(local_path_to_repo.c_str(), message.c_str());
+        if (error != 0) {
+            return Error(git_error_last(), error, local_path_to_repo.parent_path(), local_path_to_repo.filename());
+        }
+        error = Push(local_path_to_repo.c_str());
+        if (error != 0) {
+            return Error(git_error_last(), error, local_path_to_repo.parent_path(), local_path_to_repo.filename());
+        }
+
+        return 0;
+    }
 
     int Push(const std::filesystem::path& local_path_to_repo) {
         git_repository* repo = nullptr;
@@ -15,19 +31,19 @@ namespace git {
         int error = git_repository_open(&repo, local_path_to_repo.string().c_str());
         if (error != 0) {
             CleanUp(repo, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, remote, &refspecs);
-            return Error(git_error_last(), error, local_path_to_repo);
+            return error;
         }
 
         error = git_remote_lookup(&remote, repo, "origin");
         if (error != 0) {
             CleanUp(repo, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, remote, &refspecs);
-            return Error(git_error_last(), error, local_path_to_repo);
+            return error;
         }
 
         error = git_push_options_init(&options, GIT_PUSH_OPTIONS_VERSION);
         if (error != 0) {
             CleanUp(repo, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, remote, &refspecs);
-            return Error(git_error_last(), error, local_path_to_repo);
+            return error;
         }
 
         options.callbacks.credentials = CredentialsCallback;
@@ -35,7 +51,7 @@ namespace git {
         error = git_remote_push(remote, &refspecs, &options);
         if (error != 0) {
             CleanUp(repo, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, remote);
-            return Error(git_error_last(), error, local_path_to_repo);
+            return error;
         }
 
         return 0;
@@ -46,11 +62,7 @@ namespace git {
         for (auto& url : urls) {
             std::filesystem::path full_path = "repos" / static_cast<std::filesystem::path>(GetRepoName(url));
             AddCommitPush(full_path.string(), message);
-
-            ++current_repo_pos;
-            PrintProgressBar();
         }
-        current_repo_pos = 0;
     }
 
 } // namespace git

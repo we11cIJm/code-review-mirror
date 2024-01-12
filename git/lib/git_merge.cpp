@@ -11,21 +11,21 @@ namespace git {
         int error = git_repository_open(&repo, local_path_to_repo.string().c_str());
         if (error != 0) {
             CleanUp(repo);
-            return Error(git_error_last(), error, local_path_to_repo.c_str());
+            return error;
         }
 
         help_stuff::MergeOptionsInit(&opts);
         help_stuff::OptsAddRefish(&opts, "refs/remotes/origin/main");
 
-        if (git_repository_state(repo) != GIT_REPOSITORY_STATE_NONE) {
-            std::cerr << "repository is in unexpected state " << git_repository_state(repo) << std::endl;
-        }
+//        if (git_repository_state(repo) != GIT_REPOSITORY_STATE_NONE) {
+//            std::cerr << "repository is in unexpected state " << git_repository_state(repo) << std::endl;
+//        }
 
         error = help_stuff::ResolveHeads(repo, &opts);
         if (error != 0) {
             CleanUp(repo, index);
             free((char**)opts.heads);
-            return Error(git_error_last(), error, local_path_to_repo.c_str());
+            return error;
         }
 
         error = git_merge_analysis(&analysis, &preference, repo
@@ -36,7 +36,7 @@ namespace git {
             CleanUp(repo, index);
             free((char**)opts.heads);
             free(opts.annotated);
-            return Error(git_error_last(), error, local_path_to_repo.c_str());
+            return error;
         }
 
         if (analysis & GIT_MERGE_ANALYSIS_UP_TO_DATE) {
@@ -67,7 +67,6 @@ namespace git {
             checkout_opts.checkout_strategy = GIT_CHECKOUT_FORCE|GIT_CHECKOUT_ALLOW_CONFLICTS;
 
             if (preference & GIT_MERGE_PREFERENCE_FASTFORWARD_ONLY) {
-                std::cout << "Fast-forward is preferred, but only a merge is possible\n";
                 return -1;
             }
 
@@ -76,16 +75,15 @@ namespace git {
                               &merge_opts, &checkout_opts);
             if (error != 0) {
                 CleanUp(repo, index);
-                return Error(git_error_last(), error, local_path_to_repo.c_str());
+                return error;
             }
         }
 
         if (git_repository_index(&index, repo) != 0) {
             CleanUp(repo, index);
-            return Error(git_error_last(), error, local_path_to_repo.c_str());
+            return error;
         } else {
             help_stuff::CreateMergeCommit(repo, index, &opts);
-            std::cout << "Merge made\n";
         }
 
         return 0;

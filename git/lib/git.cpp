@@ -1,12 +1,12 @@
 #include <BlindCodeReview/git.hpp>
 
 namespace git {
-    int Error(const git_error* err, int error, const std::filesystem::path& local_path) {
+    int Error(const git_error* err, int error, const std::filesystem::path& local_path, const std::string& repo_name) {
         std::ofstream output(local_path / "errors.txt", std::ios_base::app);
         if (err) {
-            output << local_path << ": ERROR " << err->klass << ": " << err->message << std::endl;
+            output << repo_name << ": ERROR " << err->klass << ": " << err->message << std::endl;
         } else {
-            output << local_path << ": ERROR " << error << ": no detailed info\n";
+            output << repo_name << ": ERROR " << error << ": no detailed info\n";
         }
         output << std::endl;
         output.close();
@@ -32,12 +32,12 @@ namespace git {
             unsigned int allowed_types,
             void* payload) {
         // Create credentials and assign them to `*out`
-        git_cred_userpass_plaintext_new(out, "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", "x-oauth-basic");
+        git_cred_userpass_plaintext_new(out, PAT, "x-oauth-basic");
 
         return 0;
     }
 
-    void PrintProgressBar() {
+    void PrintProgressBar(int32_t total_repos_count, int32_t current_repo_pos) {
         const int barWidth = 50;
         int pos = barWidth * current_repo_pos / total_repos_count;
 
@@ -53,15 +53,6 @@ namespace git {
         int percentage = static_cast<double>(current_repo_pos) / total_repos_count * 100;
         std::cout << "] " << percentage << " %" << std::flush;
         std::cout << '\r';
-    }
-
-    int AddCommitPush(const std::string& local_path_to_repo, const std::string& message) {
-        int result = 0;
-        result += Add(local_path_to_repo.c_str());
-        result += Commit(local_path_to_repo.c_str(), message.c_str());
-        result += Push(local_path_to_repo.c_str());
-
-        return result;
     }
 
     void CleanUp( git_repository* repo, git_index* index

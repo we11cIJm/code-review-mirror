@@ -99,20 +99,12 @@ namespace help_stuff {
         }
 
         if (annotated_count != opts->heads_count) {
-            std::cerr << "unable to parse some refish\n";
             free(annotated);
             return -1;
         }
 
         opts->annotated = annotated;
         opts->annotated_count = annotated_count;
-        return 0;
-    }
-
-    int ProgressCallback(const char* str, int len, void* data) {
-        (void)data;
-        printf("remote: %.*s", len, str);
-        fflush(stdout); /* We don't have the \n to force the flush */
         return 0;
     }
 
@@ -131,20 +123,6 @@ namespace help_stuff {
             printf("[updated] %.10s..%.10s %s\n", a_str, b_str, refname);
         }
 
-        return 0;
-    }
-
-    int TransferProgressCallback(const git_indexer_progress* stats, void* payload) {
-        (void)payload;
-
-        if (stats->received_objects == stats->total_objects) {
-            printf("Resolving deltas %u/%u\r",
-                   stats->indexed_deltas, stats->total_deltas);
-        } else if (stats->total_objects > 0) {
-            printf("Received %u/%u objects (%u)\r",
-                   stats->received_objects, stats->total_objects,
-                   stats->indexed_objects, stats->received_bytes);
-        }
         return 0;
     }
 
@@ -238,7 +216,7 @@ namespace help_stuff {
                     , nullptr, nullptr, nullptr
                     , nullptr, nullptr, merge_commit);
             free(parents);
-            return git::Error(git_error_last(), err, std::filesystem::current_path());
+            return err;
         }
         if (ResolveRefish(&merge_commit, repo, opts->heads[0])) {
             std::cerr << "failed to resolve refish " << opts->heads[0];
@@ -255,7 +233,7 @@ namespace help_stuff {
                     , nullptr, nullptr, nullptr
                     , nullptr, nullptr, merge_commit);
             free(parents);
-            return git::Error(git_error_last(), err, std::filesystem::current_path());
+            return err;
         }
 
         /* Grab a signature */
@@ -267,7 +245,7 @@ namespace help_stuff {
                     , nullptr, nullptr, nullptr
                     , nullptr, nullptr, merge_commit);
             free(parents);
-            return git::Error(git_error_last(), err, std::filesystem::current_path());
+            return err;
         }
 
 #define MERGE_COMMIT_MSG "Merge %s '%s'"
@@ -281,7 +259,7 @@ namespace help_stuff {
                         , nullptr, nullptr, nullptr
                         , nullptr, nullptr, merge_commit);
                 free(parents);
-                return git::Error(git_error_last(), err, std::filesystem::current_path());
+                return err;
             }
         } else {
             msg_target = git_oid_tostr_s(git_annotated_commit_id(merge_commit));
@@ -307,7 +285,7 @@ namespace help_stuff {
                     , nullptr, nullptr, nullptr
                     , nullptr, nullptr, merge_commit);
             free(parents);
-            return git::Error(git_error_last(), err, std::filesystem::current_path());
+            return err;
         }
         for (i = 0; i < opts->annotated_count; i++) {
             git_commit_lookup(&parents[i + 1], repo, git_annotated_commit_id(opts->annotated[i]));
@@ -322,7 +300,7 @@ namespace help_stuff {
                     , nullptr, nullptr, nullptr
                     , nullptr, nullptr, merge_commit);
             free(parents);
-            return git::Error(git_error_last(), err, std::filesystem::current_path());
+            return err;
         }
 
         err = git_tree_lookup(&tree, repo, &tree_oid);
@@ -333,7 +311,7 @@ namespace help_stuff {
                     , nullptr, nullptr, nullptr
                     , nullptr, nullptr, merge_commit);
             free(parents);
-            return git::Error(git_error_last(), err, std::filesystem::current_path());
+            return err;
         }
 
         /* Commit time ! */
@@ -350,7 +328,7 @@ namespace help_stuff {
                     , nullptr, nullptr, nullptr
                     , nullptr, nullptr, merge_commit);
             free(parents);
-            return git::Error(git_error_last(), err, std::filesystem::current_path());
+            return err;
         }
 
         /* We're done merging, cleanup the repository state */
