@@ -18,7 +18,7 @@
 #endif
 
 namespace git {
-    int Error(const git_error* err, int error, const std::filesystem::path& local_path, const std::string& repo_name);
+    int Error(const git_error* err, int error, const std::filesystem::path& local_path, const std::filesystem::path& repo_name);
 
     void CleanUp( git_repository* repo = nullptr, git_index* index = nullptr
             , git_tree* tree = nullptr, git_object* object = nullptr

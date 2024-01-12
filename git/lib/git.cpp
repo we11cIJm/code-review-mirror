@@ -1,7 +1,7 @@
 #include <BlindCodeReview/git.hpp>
 
 namespace git {
-    int Error(const git_error* err, int error, const std::filesystem::path& local_path, const std::string& repo_name) {
+    int Error(const git_error* err, int error, const std::filesystem::path& local_path, const std::filesystem::path& repo_name) {
         std::ofstream output(local_path / "errors.txt", std::ios_base::app);
         if (err) {
             output << repo_name << ": ERROR " << err->klass << ": " << err->message << std::endl;
