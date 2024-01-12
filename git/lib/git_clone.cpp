@@ -13,7 +13,7 @@ namespace git {
         const char* mbstr = nullptr;
 #ifdef _WIN32
         char tmp[256] = "";
-        wcstombs(tmp, work_dir.filename().c_str(), 256);
+        wcstombs(tmp, work_dir.c_str(), 256);
         mbstr = tmp;
 #else
         mbstr = work_dir.string().c_str();
