@@ -10,8 +10,15 @@ namespace git {
         checkout_opts.checkout_strategy = GIT_CHECKOUT_SAFE;
         clone_opts.checkout_opts = checkout_opts;
         clone_opts.fetch_opts.callbacks.credentials = CredentialsCallback;
-
-        int error = git_clone(&cloned_repo, url, work_dir.string().c_str(), &clone_opts);
+        const char* mbstr = nullptr;
+#ifdef _WIN32
+        char tmp[256] = "";
+        wcstombs(tmp, work_dir.filename().c_str(), 256);
+        mbstr = tmp;
+#else
+        mbstr = work_dir.string().c_str();
+#endif
+        int error = git_clone(&cloned_repo, url, mbstr, &clone_opts);
         if (error != 0) {
             CleanUp(cloned_repo);
             Error(git_error_last(), error, work_dir.parent_path(), GetRepoName(url));
@@ -41,6 +48,7 @@ namespace git {
         while (input >> url) {
             std::filesystem::path work_dir =
                     std::filesystem::path(local_path) / "repos" / static_cast<std::filesystem::path>(GetRepoName(url));
+            Clone(url.c_str(), work_dir);
             PrintProgressBar(total_repos_count, ++current_repo_pos);
         }
     }
