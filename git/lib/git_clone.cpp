@@ -16,7 +16,7 @@ namespace git {
         wcstombs(tmp, work_dir.c_str(), 256);
         mbstr = tmp;
 #else
-        mbstr = work_dir.string().c_str();
+        mbstr = work_dir.c_str();
 #endif
         int error = git_clone(&cloned_repo, url, mbstr, &clone_opts);
         if (error != 0) {

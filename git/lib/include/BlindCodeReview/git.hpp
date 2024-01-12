@@ -18,6 +18,18 @@
 #endif
 
 namespace git {
+
+    class Git {
+    public:
+        Git() {
+            git_libgit2_init();
+        }
+
+        ~Git() {
+            git_libgit2_shutdown();
+        }
+    };
+
     int Error(const git_error* err, int error, const std::filesystem::path& local_path, const std::filesystem::path& repo_name);
 
     void CleanUp( git_repository* repo = nullptr, git_index* index = nullptr

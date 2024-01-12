@@ -5,7 +5,7 @@ using namespace git;
 const char* url = "https://github.com/we11cIJm/testrepo.git";
 
 int main(int argc, char** argv) {
-    git_libgit2_init();
+    Git gitt;
 
     std::filesystem::path filename = "/home/kolya/Desktop/code/BlindCodeReview/build/git/urls.txt";
 //    std::string filename = "../urls.txt";
@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
 //    std::string push = "--push";
 //    std::string push_l = "-p";
 //    std::string pull = "--pull";
-    CloneByFile(filename, "/home/kolya/Desktop/coderepos");
+    CloneByFile(filename, std::filesystem::path("/home/kolya/Desktop/coderepos"));
 //    AddCommitPush("./testrepo", "try to push with deleted remotely files");
 
 //    if (argc < 2) {
@@ -41,7 +41,6 @@ int main(int argc, char** argv) {
 //    } else {
 //        std::cout << "Other is called\n";
 //    }
-    git_libgit2_shutdown();
 
     return 0;
 }

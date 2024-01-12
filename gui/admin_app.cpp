@@ -49,6 +49,7 @@ static void glfw_error_callback(int error, const char* description)
 
 int main(int, char**)
 {
+    git::Git gitt;
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
