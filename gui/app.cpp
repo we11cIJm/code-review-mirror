@@ -95,7 +95,7 @@ int main(int, char**)
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     // Our state
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 clear_color = ImVec4(.45f, .55f, .60f, 1.00f);
     float globalScale = 1.1;
 
     bool toScrollEditor = false;
@@ -174,7 +174,7 @@ int main(int, char**)
 
         {
             ImGui::SetNextWindowPos(ImVec2(x / 2., 0));
-            ImGui::SetNextWindowSize(ImVec2(x / 2., 0.71 * (globalScale * 37 + 18) / 1920 * x));
+            ImGui::SetNextWindowSize(ImVec2(x / 2., .71 * (globalScale * 37 + 18) / 1920 * x));
             bool oi = true;
             ImGui::Begin("Main", &oi, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
             ImGui::SetWindowFontScale(globalScale * x / 1920);
@@ -201,8 +201,8 @@ int main(int, char**)
                 openChanger = true;
             }
             if (openChanger) {
-                ImGui::SetNextWindowPos(ImVec2(0.4 * x, 0.4 * y));
-                ImGui::SetNextWindowSize(ImVec2(0.2 * x, 0.2 * y));
+                ImGui::SetNextWindowPos(ImVec2(.4 * x, .4 * y));
+                ImGui::SetNextWindowSize(ImVec2(.2 * x, .2 * y));
                 ImGui::Begin("File changer window", &openChanger, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
                 for (const auto& entry : std::filesystem::directory_iterator(workPath / "to_review")) {
                     if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
@@ -259,10 +259,10 @@ int main(int, char**)
 
             ImGui::End();
 
-            ImGui::SetNextWindowPos(ImVec2(x / 2., 0.71 * (globalScale * 37 + 18) / 1920 * x));
-            ImGui::SetNextWindowSize(ImVec2(x / 2., y - 0.71 * (globalScale * 37 + 18) / 1920 * x));
+            ImGui::SetNextWindowPos(ImVec2(x / 2., .71 * (globalScale * 37 + 18) / 1920 * x));
+            ImGui::SetNextWindowSize(ImVec2(x / 2., y - .71 * (globalScale * 37 + 18) / 1920 * x));
             ImGui::Begin("Comments", &oi, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
-            ImGui::SetWindowFontScale(0.88 * globalScale * x / 1920);
+            ImGui::SetWindowFontScale(.88 * globalScale * x / 1920);
 
             ImGui::SetCursorPosY(globalScale * 13 / 1920 * x * numLines);
             ImGui::Dummy(ImVec2(0, globalScale * 22 / 1920 * x));
@@ -290,8 +290,8 @@ int main(int, char**)
             ImGui::End();
 
             if (open) {
-                ImGui::SetNextWindowPos(ImVec2(0.4 * x, 0.4 * y));
-                ImGui::SetNextWindowSize(ImVec2(0.2 * x, 0.2 * y));
+                ImGui::SetNextWindowPos(ImVec2(.4 * x, .4 * y));
+                ImGui::SetNextWindowSize(ImVec2(.2 * x, .2 * y));
                 ImGui::Begin("Didn't set path for review yet", &open, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
                 ImGui::SetWindowFontScale(globalScale * x / 1920);
                 if (ImGui::Button("Close")) {
@@ -349,11 +349,7 @@ int main(int, char**)
                         editor.IsOverwrite() ? "Ovr" : "Ins",
                         editor.CanUndo() ? "*" : " ",
                         editor.GetLanguageDefinition().mName.c_str()); ImGui::SameLine();
-#ifdef _WIN32
-            ImGui::Text("%ls", fileName.c_str());
-#else
-            ImGui::Text("%s", fileName.c_str());
-#endif
+            ImGui::Text("%s", fileName.u8string().c_str());
             
             fileName.replace_extension("");
 
@@ -388,8 +384,8 @@ int main(int, char**)
             }
         }
         if (open_not_a_repo) {
-            ImGui::SetNextWindowPos(ImVec2(0.4 * x, 0.4 * y));
-            ImGui::SetNextWindowSize(ImVec2(0.2 * x, 0.2 * y));
+            ImGui::SetNextWindowPos(ImVec2(.4 * x, .4 * y));
+            ImGui::SetNextWindowSize(ImVec2(.2 * x, .2 * y));
             ImGui::Begin("Not a git repo");
             if (ImGui::Button("Close")) {
                 open_not_a_repo = false;
@@ -399,8 +395,8 @@ int main(int, char**)
         }
 
         if (io.KeyCtrl) {
-            globalScale += io.MouseWheel * 0.1f;
-            globalScale = std::max(0.8f, globalScale);
+            globalScale += io.MouseWheel * .1f;
+            globalScale = std::max(.8f, globalScale);
         }
 
         if (std::abs(scrollEditor - scrollComments) > 2.0 / y) {

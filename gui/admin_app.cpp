@@ -90,8 +90,6 @@ int main(int, char**)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.IniFilename = nullptr;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
     ImGui::StyleColorsDark();
 
@@ -151,7 +149,7 @@ int main(int, char**)
         if (!std::filesystem::is_directory(workPath)) {
 			workPath = "";
         }
-        if (!std::filesystem::is_directory(urlPath)) {
+        if (!std::filesystem::is_regular_file(urlPath)) {
 			urlPath = "";
         }
 		adminSettings.close();
@@ -321,16 +319,8 @@ int main(int, char**)
                 openModeChooser = true;
             }
             for (const auto& entry : std::filesystem::directory_iterator(workPath)) {
-                const char* mbstr = nullptr;
-#ifdef _WIN32
-                char tmp[256] = "";
-                wcstombs(tmp, entry.path().filename().c_str(), 256);
-                mbstr = tmp;
-#else
-                mbstr = entry.path().string().c_str();
-#endif
-                if (std::filesystem::exists(entry.path() / ".git") && ImGui::Button(mbstr)) {
-                    repoName = entry.path();
+                if (std::filesystem::exists(entry.path() / ".git") && ImGui::Button(reinterpret_cast<const char*>(entry.path().filename().u8string().c_str()))) {
+                    repoName = entry.path().filename();
                     openPersonChooser = false;
                     openFileChooser = true;
                 }
@@ -353,15 +343,7 @@ int main(int, char**)
             for (const auto& entry : std::filesystem::directory_iterator(workPath / repoName / "to_review")) {
                 if (entry.is_regular_file() && entry.path().extension() == ".cpp") {
                     ++fileCount;
-                    const char* mbstr = nullptr;
-#ifdef _WIN32
-                    char tmp[256] = "";
-                    wcstombs(tmp, entry.path().filename().c_str(), 256);
-                    mbstr = tmp;
-#else
-                    mbstr = entry.path().string().c_str();
-#endif
-                    if (ImGui::Button(mbstr)) {
+                    if (ImGui::Button(reinterpret_cast<const char*>(entry.path().filename().u8string().c_str()))) {
                         fileName = entry.path().stem();
                         openFileChooser = false;
                         openEditor = true;
@@ -429,11 +411,7 @@ int main(int, char**)
                 editor.IsOverwrite() ? "Ovr" : "Ins",
                 editor.CanUndo() ? "*" : " ",
                 editor.GetLanguageDefinition().mName.c_str()); ImGui::SameLine();
-#ifdef _WIN32
-            ImGui::Text("%ls", fileName.c_str());
-#else
-            ImGui::Text("%s", fileName.c_str());
-#endif
+            ImGui::Text("%s", reinterpret_cast<const char*>(fileName.u8string().c_str()));
             fileName.replace_extension("");
 
             ImGui::BeginChild("TextEditor", ImVec2(0, 0), 0, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NoMove);
@@ -454,7 +432,7 @@ int main(int, char**)
 
 
             ImGui::SetNextWindowPos(ImVec2(x / 2., 0));
-            ImGui::SetNextWindowSize(ImVec2(x / 2., 0.71 * (globalScale * 37 + 18) / 1920 * x));
+            ImGui::SetNextWindowSize(ImVec2(x / 2., .71 * (globalScale * 37 + 18) / 1920 * x));
             bool oi = true;
 
             ImGui::Begin("Main", &oi, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
@@ -468,11 +446,10 @@ int main(int, char**)
             ImGui::End();
 
 
-            ImGui::SetNextWindowPos(ImVec2(x / 2., 0.71 * (globalScale * 37 + 18) / 1920 * x));
-            ImGui::SetNextWindowSize(ImVec2(x / 2., y - 0.71 * (globalScale * 37 + 18) / 1920 * x));
-
+            ImGui::SetNextWindowPos(ImVec2(x / 2., .71 * (globalScale * 37 + 18) / 1920 * x));
+            ImGui::SetNextWindowSize(ImVec2(x / 2., y - .71 * (globalScale * 37 + 18) / 1920 * x));
             ImGui::Begin("Comments", &oi, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
-            ImGui::SetWindowFontScale(0.88 * globalScale * x / 1920);
+            ImGui::SetWindowFontScale(.88 * globalScale * x / 1920);
 
             ImGui::SetCursorPosY(globalScale * 13 / 1920 * x * numLines);
             ImGui::Dummy(ImVec2(0, globalScale * 22 / 1920 * x));
@@ -490,7 +467,7 @@ int main(int, char**)
 
             for (auto el : reviewData) {
                 int v = el.first;
-                ImGui::SetCursorPos(ImVec2(5, 7 + globalScale * 13 / 1920 * x * (v - 1)));
+                ImGui::SetCursorPos(ImVec2(0, globalScale * 13 / 1920 * x * (v - 1)));
                 InputTextWithHint("##com " + std::to_string(v), "comment " + std::to_string(v), reviewData[v], ImGuiInputTextFlags_ReadOnly);
             }
             
@@ -511,8 +488,8 @@ int main(int, char**)
         }
 
         if (io.KeyCtrl) {
-            globalScale += io.MouseWheel * 0.1f;
-            globalScale = std::max(0.8f, globalScale);
+            globalScale += io.MouseWheel * .1;
+            globalScale = std::max(.8f, globalScale);
         }
 
         if (std::abs(scrollEditor - scrollComments) > 2.0 / y) {
@@ -539,7 +516,7 @@ int main(int, char**)
 #endif
 
     std::ofstream adminSettings("admin_settings.txt");
-    adminSettings << workPath << urlPath << globalScale;
+    adminSettings << workPath << std::endl << urlPath << std::endl << globalScale;
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
