@@ -60,7 +60,7 @@ namespace git {
     void PushAll(const std::filesystem::path& path_to_all_repos, const std::vector<std::string>& urls) {
         std::string message = "files for review has been sent";
         for (auto& url : urls) {
-            std::filesystem::path full_path = "repos" / static_cast<std::filesystem::path>(GetRepoName(url));
+            std::filesystem::path full_path = path_to_all_repos / "repos" / static_cast<std::filesystem::path>(GetRepoName(url));
             AddCommitPush(full_path.string(), message);
         }
     }
