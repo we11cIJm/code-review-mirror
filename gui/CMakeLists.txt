@@ -1,4 +1,5 @@
 include(FetchContent)
+
 FetchContent_Declare(
     imgui_filebrowser
     URL https://github.com/AirGuanZ/imgui-filebrowser/archive/master.zip
@@ -33,5 +34,5 @@ endif()
 add_executable(app app.cpp)
 add_executable(admin_app admin_app.cpp)
 
-target_link_libraries(app PRIVATE imgui::imgui ColorEditor filebrowser ${OPENGL_LIBRARIES} PkgConfig::LIBGIT2 gitlib)
-target_link_libraries(admin_app PRIVATE imgui::imgui ColorEditor filebrowser ${OPENGL_LIBRARIES} PkgConfig::LIBGIT2 gitlib)
+target_link_libraries(app PRIVATE imgui::imgui ColorEditor filebrowser ${OPENGL_LIBRARIES})
+target_link_libraries(admin_app PRIVATE imgui::imgui ColorEditor filebrowser ${OPENGL_LIBRARIES} PkgConfig::LIBGIT2 gitlib libdist)

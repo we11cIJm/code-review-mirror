@@ -12,7 +12,6 @@ set(source_files
 
 set(header_files
     include/BlindCodeReview/git.hpp
-    include/BlindCodeReview/pat.hpp
 )
 
 add_library(gitlib ${source_files} ${header_files})

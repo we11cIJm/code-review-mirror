@@ -17,6 +17,7 @@
 #include "imguicolortextedit-src/TextEditor.h"
 
 #include <BlindCodeReview/git.hpp>
+#include <distributer/distributer.hpp>
 
 #define GL_SILENCE_DEPRECATION
 #if defined(IMGUI_IMPL_OPENGL_ES2)
@@ -31,10 +32,6 @@
 #ifdef __EMSCRIPTEN__
 #include "../libs/emscripten/emscripten_mainloop_stub.h"
 #endif
-
-void distribute() {
-
-}
 
 std::istream& readOneChar(std::istream& input) {
     char tmpC = 0;
@@ -58,7 +55,6 @@ static void glfw_error_callback(int error, const char* description)
 
 int main(int, char**)
 {
-    git::Git gitt;
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
@@ -158,6 +154,8 @@ int main(int, char**)
         std::string err = "sth went wrong";
     }
 
+    git::Git gitt;
+
 #ifdef __EMSCRIPTEN__
     io.IniFilename = nullptr;
     EMSCRIPTEN_MAINLOOP_BEGIN
@@ -253,7 +251,7 @@ int main(int, char**)
                 while (std::getline(readUrl, line)) {
                     urlVec.push_back(line);
                 }
-                distribute(); //waiting for distribution
+                FunctionStatus result = distributeFiles(workPath / "repos");
                 git::PushAll(workPath, urlVec);
             }
             if ((sFiles || cReviews) && ImGui::Button("Collect reviews")) {

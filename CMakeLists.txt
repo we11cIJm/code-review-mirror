@@ -18,3 +18,4 @@ pkg_check_modules(LIBGIT2 REQUIRED IMPORTED_TARGET libgit2)
 add_subdirectory(git)
 add_subdirectory(gui)
 add_subdirectory(distribution)
+
