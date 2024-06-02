@@ -14,7 +14,7 @@
 #include <vector>
 
 #ifndef PAT
-#define PAT "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"
+#define PAT "ghp_************************************"
 #endif
 
 namespace git {
